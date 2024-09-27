@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { Menu, X, User } from 'lucide-react'
-import { Button } from "@/app/components/ui/Button"
+import Link from 'next/link';
+import { Menu, User } from 'lucide-react';
+import { Button } from '@/app/components/ui/Button';
 
 export default function Navbar() {
   return (
@@ -13,10 +13,34 @@ export default function Navbar() {
             </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link href="/" className="text-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium" prefetch={false}>Home</Link>
-                <Link href="/about" className="text-muted-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium" prefetch={false}>About</Link>
-                <Link href="/services" className="text-muted-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium" prefetch={false}>Services</Link>
-                <Link href="/contact" className="text-muted-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium" prefetch={false}>Contact</Link>
+                <Link
+                  href="/"
+                  className="text-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium"
+                  prefetch={false}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/about"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium"
+                  prefetch={false}
+                >
+                  About
+                </Link>
+                <Link
+                  href="/services"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium"
+                  prefetch={false}
+                >
+                  Services
+                </Link>
+                <Link
+                  href="/contact"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium"
+                  prefetch={false}
+                >
+                  Contact
+                </Link>
               </div>
             </div>
           </div>
@@ -35,5 +59,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
