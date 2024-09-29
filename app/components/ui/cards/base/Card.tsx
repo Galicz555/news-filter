@@ -1,19 +1,39 @@
 import * as React from 'react';
+import Link from 'next/link';
+import { AnimationDefinition, motion } from 'framer-motion';
+import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'rounded-lg border bg-card text-card-foreground shadow-sm',
-      className,
-    )}
-    {...props}
-  />
-));
+interface CardProps {
+  className?: string;
+  href?: string;
+  onAnimationStart?: (definition: AnimationDefinition) => void;
+  children: React.ReactNode;
+}
+
+const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ className, href, onAnimationStart, ...props }, ref) => (
+    <motion.div
+      ref={ref}
+      className={cn(
+        'rounded-lg border bg-card text-card-foreground shadow-sm',
+        className,
+      )}
+      onAnimationStart={onAnimationStart}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      {...props}
+    >
+      {href ? (
+        <Link href={href} className="block h-full w-full">
+          <div className="h-full w-full">{props.children}</div>
+        </Link>
+      ) : (
+        <div className="h-full w-full">{props.children}</div>
+      )}
+    </motion.div>
+  ),
+);
 Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef<
