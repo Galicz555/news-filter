@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import Switch from '@/components/ui/switches/base/Switch';
 
@@ -12,6 +12,10 @@ interface SortSettingsProps {
 
 export default function SortSettings({ initialSettings }: SortSettingsProps) {
   const [settings, setSettings] = useState(initialSettings);
+
+  useEffect(() => {
+    setSettings(initialSettings);
+  }, [initialSettings]);
 
   const updateSetting = (key: string) => {
     const newSettings = { ...settings, [key]: !settings[key] };

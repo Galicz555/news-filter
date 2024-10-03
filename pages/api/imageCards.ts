@@ -10,6 +10,6 @@ export default async function handler(
   const pageNumber = parseInt(page as string, 10);
   const limitNumber = parseInt(limit as string, 10);
 
-  const imageCards = await fetchImageCards(pageNumber, limitNumber);
+  const imageCards = await fetchImageCards(pageNumber, limitNumber, new Map());
   res.status(200).json(imageCards);
 }

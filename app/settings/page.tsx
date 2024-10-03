@@ -1,21 +1,30 @@
-import { cookies } from 'next/headers';
+'use client';
+
 import AnimatedContainer from '@/components/ui/animation/AnimatedContainer';
 import SortSettings from '@/app/settings/SortSettings';
 import DarkModeSwitch from '@/components/ui/switches/DarkMode';
 import BasePageLayout from '@/components/ui/layout/page/base/layout';
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
 
 const defaultSettings = {
-  happy: false,
-  sophisticated: false,
-  spiritual: false,
+  '😇': false,
+  '😶‍🌫️': false,
+  '😁': false,
+  '😲': false,
+  '🤓': false,
+  '🤑': false,
 };
 
 export default function SettingsPage() {
-  const cookieStore = cookies();
-  const settingsCookie = cookieStore.get('settings');
-  const initialSettings = settingsCookie
-    ? JSON.parse(settingsCookie.value)
-    : defaultSettings;
+  const [initialSettings, setInitialSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    const settingsCookie = Cookies.get('settings');
+    if (settingsCookie) {
+      setInitialSettings(JSON.parse(settingsCookie));
+    }
+  }, []);
 
   return (
     <AnimatedContainer>
