@@ -1,15 +1,13 @@
 import Image from 'next/image';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from '@/app/components/ui/cards/base/Card';
+import { Card, CardContent, CardFooter } from '@/components/ui/cards/base/Card';
 
-interface ImageCardProps {
+export interface ImageCardProps {
+  id: string;
   image: string;
   title: string;
   href?: string;
   priority?: boolean;
+  scores?: Map<string, string>;
 }
 
 export default function ImageCard({
@@ -17,9 +15,13 @@ export default function ImageCard({
   title,
   priority,
   href,
+  scores,
 }: ImageCardProps) {
   return (
-    <Card className="flex-grow w-full sm:w-[300px] overflow-hidden" href={href}>
+    <Card
+      className="flex-grow w-full sm:w-[300px] overflow-hidden shadow-lg"
+      href={href}
+    >
       <CardContent className="p-0">
         <div className="relative h-[200px] w-full">
           <Image
@@ -32,8 +34,16 @@ export default function ImageCard({
           />
         </div>
       </CardContent>
-      <CardFooter className="p-4">
+      <CardFooter className="p-4 flex-col">
         <h3 className="text-lg font-semibold">{title}</h3>
+        <div className="grid grid-cols-6 gap-4">
+          {scores &&
+            Array.from(scores.entries()).map(([key, value]) => (
+              <div key={key} className="flex flex-col items-center">
+                <strong>{key}</strong> {value}
+              </div>
+            ))}
+        </div>
       </CardFooter>
     </Card>
   );

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, User, X } from 'lucide-react';
-import { Button } from '@/app/components/ui/Button';
+import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,7 +13,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-background border-b">
+    <nav className="bg-background border-b shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -41,12 +41,12 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-          <div className="hidden md:block">
+          {/* <div className="hidden md:block">
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
               <span className="sr-only">User menu</span>
             </Button>
-          </div>
+          </div> */}
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMenu}>
               {isMenuOpen ? (

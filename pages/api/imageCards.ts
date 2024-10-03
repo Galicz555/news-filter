@@ -1,14 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-const fetchImageCards = async (page: number, limit: number) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return Array.from({ length: limit }, (_, i) => ({
-    id: page * limit + i + 1,
-    title: `Beautiful Landscape ${page * limit + i + 1}`,
-    href: `article/${i + 1}`,
-    image: `/placeholder.jpeg`,
-  }));
-};
+import { fetchImageCards } from '@/lib/api/fetchImageCards';
 
 export default async function handler(
   req: NextApiRequest,

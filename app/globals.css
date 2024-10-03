@@ -17,6 +17,7 @@ body {
 
 @layer base {
   :root {
+    --holy-yellow: 51 100% 50%;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -44,6 +45,7 @@ body {
     --radius: 0.5rem;
   }
   .dark {
+    --holy-yellow: 45 100% 50%;
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;

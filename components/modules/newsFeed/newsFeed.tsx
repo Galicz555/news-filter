@@ -2,21 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
-import ImageCard from '@/app/components/ui/cards/ImageCard';
-import ImageCardSkeleton from '@/app/components/ui/cards/ImageCardSkeleton';
-
-const fetchImageCards = async (page: number, limit: number) => {
-  const response = await fetch(`/api/imageCards?page=${page}&limit=${limit}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch image cards');
-  }
-  return response.json();
-};
+import ImageCard, { ImageCardProps } from '@/components/ui/cards/ImageCard';
+import ImageCardSkeleton from '@/components/ui/cards/ImageCardSkeleton';
+import { fetchImageCards } from '@/lib/api/fetchImageCards';
 
 export default function ImageCardFeed() {
-  const [imageCards, setImageCards] = useState<
-    Array<{ id: number; title: string; image: string; href: string }>
-  >([]);
+  const [imageCards, setImageCards] = useState<Array<ImageCardProps>>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [ref, inView] = useInView();
@@ -53,10 +44,12 @@ export default function ImageCardFeed() {
       {imageCards.map((card, index) => (
         <ImageCard
           key={card.id}
+          id={card.id}
           image={card.image}
           title={card.title}
           href={card.href}
           priority={index < 10}
+          scores={card.scores}
         />
       ))}
       {loading &&
