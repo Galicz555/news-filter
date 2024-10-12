@@ -1,8 +1,29 @@
 {
+  "időpont": [
+    "2024. október 12. 06:15"
+  ],
   "főcímek": [
     "Íme öt leleplező ábra a világ szupergazdagjairól – Nem is gondolnád, hol szeretnek nyaralni"
   ],
   "alcímek": [],
-  "szöveg": [],
+  "szöveg": [
+    "A jelentésből kiderül, hogy a világ százmilliomosainak egyharmada 50 városban koncentrálódik, és ezek közel kétharmada olyan országokban található, amelyek befektetési migrációs programokat kínálnak.",
+    "Az Egyesült Államok továbbra is uralja a százmilliomosok világát: a top 50 város első három helyét amerikai városok teszik ki, és összesen 15 amerikai metropolisz szerepel az elitlistán.",
+    "New York City 744 százmilliomos lakossal az első helyen áll, amelyet szorosan követ a Bay Area (amely San Franciscót és a Szilícium-völgyet foglalja magába) 675, valamint Los Angeles 496 szupergazdag lakossal. Ezek a városok nem csak, hogy globálisan megőrizték vezető pozíciójukat, de a következő évtizedben jelentősen, több mint 50%-kal nőhet itt a szupergazdagok száma.",
+    "Az ázsiai városok is gyorsan törnek előre, jelenleg négy ázsiai város és terület szerepel a világ top 10 százmilliomos hotspotja között. Peking 347 szupergazdaggal a világranglista 5. helyén áll, míg Szingapúr 336 fővel szorosan követi a 6. helyen. Sanghaj 322 centimilliomossal a 7. helyen áll, Hongkong pedig 320 ultragazdag lakossal a 8. helyen. Az előrejelzések szerint mind Szingapúr, mind Hongkong a következő másfél évtizedben (2040-ig) kivételesen magas, 100% feletti vagyonnövekedési rátával fog rendelkezni.",
+    "Európa képviselete a szupergazdagok körében változó dinamikáról árulkodik. London, amelyet egykor a világ pénzügyi fővárosának és a gazdagság globális epicentrumának tekintettek, ma már csak a 4. helyen áll a százmilliomosok 50 legjobb városa között, 370 szupergazdag lakossal, és a következő 16 évre (2040-ig) a százmilliomosok számának 50%-nál kisebb mértékű növekedésére vonatkozó előrejelzéssel. Párizs és a környező Île-de-France régió 286 szupergazdag lakossal a 10. helyet foglalja el a városindexen. Nizza az egyetlen másik francia város a Top 50-ben, ahol 95, 100 millió dollár feletti vagyonnal bíró személy él.",
+    "Az adatok rávilágítanak arra is, hogy a legtöbb szupergazdagnak otthont adó városban egy év alatt csökkent a százmilliomosok száma:",
+    "Ha 2040-ig tekintünk előre, a százmilliós népesség növekedési pályája érdekes képet fest a vagyonfelhalmozásról és a migrációról. Számos ázsiai és közel-keleti város robbanásszerű növekedésre számíthat: Hangcsou, Sencsen, Tajpej, Dubai és Abu Dhabi százmilliomos közösségei az előrejelzések szerint több mint 150%-kal fognak növekedni.",
+    "Egyelőre úgy tűnik, hogy az USA megszilárdítja a százmilliomosok vonzása szempontjából első számú országként elfoglalt helyét. Az egészséges vagyonnövekedési előrejelzésekkel rendelkező legfontosabb amerikai városok közé tartozik Philadelphia, Atlanta, Scottsdale, Montecito és Santa Barbara, Nápoly, Denver, Tampa és Sarasota, valamint Boca Raton. Az első helyen azonban továbbra is Rijád áll, Manchester, Perth, Stockholm, Isztambul és Szentpétervár zárja a top 10-et. A Közel-Kelet, nevezetesen az Egyesült Arab Emírségek és Szaúd-Arábia továbbra is a legerősebb milliomosmágnes.",
+    "Nem olcsó mulatság a legelkelőbb városi körzetekben ingatlannal rendelkezni, a tanulmány azt is megvizsgálta, hol a legmagasabbak az átlagos négyzetméterárak egy 200-400 négyzetméteres városi prémium lakás esetében.",
+    "Talán nem olyan meglepő, hogy",
+    "Monaco végzett az első helyen több mint 36 ezer dolláros négyzetméterárral, ezt New York, majd Hongkong követi a listán.",
+    "Látható, hogy tavalyhoz képest jelentőset ugrottak az ingatlanárak, egyedül Londonban lehet nagyobb visszaesést látni, ezzel a tavalyi harmadik helyről a 6. helyre csúszott vissza a brit főváros.",
+    "A százmilliomosok körülbelül 65%-ának volt második otthona a saját országán kívül, és ha a saját országában lévő második otthont is beleszámítjuk, akkor ez az arány 90% fölé emelkedik. A százmilliomosok szeretnek utazni (ki nem?), és az utazási adataik alapján erősen vonzódnak Európához és az USA-hoz. Európában",
+    "Az Egyesült Államokban",
+    "A jelentésből az is kiderül, hogy a legalább 100 millió dolláros likvid befektethető vagyonnal rendelkezők közel egyötöde (17,1%) 10 egyetemen tanult világszerte. Ha azt nézzük meg, hogy mely egyetemek „termelték ki” a legtöbb szupergazdagot, akkor a top 10 egyetem közül hét az Egyesült Államokban található. Ezek a prémium kategóriás amerikai oktatási intézmények adják a világ százmilliomosainak 13,3%-át. Az első helyen a Harvard Egyetem áll, ahová a világ szupergazdagjainak 3,6%-a járt, a második helyen a Stanford Egyetem áll 2,2%-kal, a harmadik helyen pedig a Pennsylvaniai Egyetem áll 1,9%-kal.",
+    "A címlapkép illusztráció. Címlapkép forrása: Getty Images",
+    "A jelen írás nem minősül befektetési tanácsadásnak vagy befektetési ajánlásnak. Részletes jogi információ"
+  ],
   "fájlnév": "portfolio.json"
 }
