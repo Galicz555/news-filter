@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import Cookies from 'js-cookie';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+
 import ImageCard, { ImageCardProps } from '@/components/ui/cards/ImageCard';
 import ImageCardSkeleton from '@/components/ui/cards/ImageCardSkeleton';
 import { fetchImageCards } from '@/lib/api/fetchImageCards';
-import Cookies from 'js-cookie';
-import { kapard_le_az_adatokat } from '@/web/kaparó';
 
 type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
 
@@ -26,11 +26,7 @@ export default function ImageCardFeed() {
 
   const loadMoreImageCards = useCallback(async () => {
     setLoading(true);
-    const newImageCards = await fetchImageCards(
-      page,
-      10,
-      settingsMapRef.current,
-    );
+    const newImageCards = await fetchImageCards(page, 10, settingsMapRef.current);
     setImageCards((prevImageCards) => [...prevImageCards, ...newImageCards]);
     setPage((prevPage) => prevPage + 1);
     setLoading(false);
@@ -40,11 +36,7 @@ export default function ImageCardFeed() {
   useEffect(() => {
     const initialLoad = async () => {
       setLoading(true);
-      const initialImageCards = await fetchImageCards(
-        0,
-        10,
-        settingsMapRef.current,
-      );
+      const initialImageCards = await fetchImageCards(0, 10, settingsMapRef.current);
       setImageCards(initialImageCards);
       setPage(1);
       setLoading(false);
