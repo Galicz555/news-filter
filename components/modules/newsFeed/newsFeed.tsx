@@ -6,6 +6,7 @@ import ImageCard, { ImageCardProps } from '@/components/ui/cards/ImageCard';
 import ImageCardSkeleton from '@/components/ui/cards/ImageCardSkeleton';
 import { fetchImageCards } from '@/lib/api/fetchImageCards';
 import Cookies from 'js-cookie';
+import { kapard_le_az_adatokat } from '@/web/kaparó';
 
 type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
 

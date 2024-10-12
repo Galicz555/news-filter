@@ -1,11 +1,11 @@
 'use client';
 
-import AnimatedContainer from '@/components/ui/animation/AnimatedContainer';
-import SortSettings from '@/app/settings/SortSettings';
-import DarkModeSwitch from '@/components/ui/switches/DarkMode';
-import BasePageLayout from '@/components/ui/layout/page/base/layout';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
+
+import SortSettings from '@/app/settings/SortSettings';
+import BasePageLayout from '@/components/ui/layout/page/base/layout';
+import DarkModeSwitch from '@/components/ui/switches/DarkMode';
 
 const defaultSettings = {
   '😇': false,
@@ -27,23 +27,21 @@ export default function SettingsPage() {
   }, []);
 
   return (
-    <AnimatedContainer>
-      <BasePageLayout
-        mainContent={
-          <section className="w-full">
-            <h1 className="text-3xl font-bold mb-6">Settings</h1>
-            <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4">General settings</h2>
-              <DarkModeSwitch />
-            </section>
-            <section>
-              <h2 className="text-xl font-semibold mb-4">Sort settings</h2>
-              <SortSettings initialSettings={initialSettings} />
-            </section>
+    <BasePageLayout
+      mainContent={
+        <section className="w-full">
+          <h1 className="text-3xl font-bold mb-6">Settings</h1>
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">General settings</h2>
+            <DarkModeSwitch />
           </section>
-        }
-        footerContent={<div>Made by Galicz Mihály</div>}
-      ></BasePageLayout>
-    </AnimatedContainer>
+          <section>
+            <h2 className="text-xl font-semibold mb-4">Sort settings</h2>
+            <SortSettings initialSettings={initialSettings} />
+          </section>
+        </section>
+      }
+      footerContent={<div>Made by Galicz Mihály</div>}
+    ></BasePageLayout>
   );
 }

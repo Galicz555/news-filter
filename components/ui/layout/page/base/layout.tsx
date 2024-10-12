@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+
 import AnimatedContainer from '@/components/ui/animation/AnimatedContainer';
 
 interface BasePageLayoutProps {
@@ -25,4 +26,3 @@ const BasePageLayout: React.FC<BasePageLayoutProps> = ({
 };
 
 export default BasePageLayout;
-export type { BasePageLayoutProps };
