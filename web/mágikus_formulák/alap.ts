@@ -5,7 +5,6 @@ import { gyűjtsd_ki_és_fertőtlenítsd_őket } from '../../utils/áramlatok/cs
 export type Alap = {
   főcímek: string[];
   szöveg: string[];
-  fájlnév: string;
 };
 
 export const alap = async ($: cheerio.CheerioAPI) => {
@@ -14,6 +13,5 @@ export const alap = async ($: cheerio.CheerioAPI) => {
   return {
     főcímek,
     szöveg,
-    fájlnév: 'alap.json',
   };
 };

@@ -16,3 +16,17 @@ export const gyűjtsd_ki_célzottan = (
     .map((_, el) => $(el).text())
     .get();
 };
+
+export const gyűjtsd_ki_az_ömlesztett_szöveget = ($: cheerio.CheerioAPI, cél: string) => {
+  return $(cél)
+    .contents()
+    .filter(
+      (_, el) =>
+        el.type === 'text' ||
+        (el.type === 'tag' && el.tagName !== 'script' && el.tagName !== 'style'),
+    )
+    .map((_, el) => $(el).text().trim())
+    .get()
+    .filter((text) => text.length > 0)
+    .join(' ');
+};
