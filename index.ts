@@ -1,45 +1,41 @@
-import * as cheerio from 'cheerio';
+import { hozz_létre_helyi_tárolót } from '@/tárolók/helyi';
+import { próbáld_meg } from '@/utils/kérések/próbál';
+import { tépd_ki_az_oldalakat } from '@/web/felderítés/rssFolyamok';
+import { lekapar as lekaparni } from '@/web/kaparó';
+// import { alap } from './web/mágikus_formulák/alap';
+import { portfolio } from '@/web/mágikus_formulák/portfolio';
 
-import { fetchRSSFeed } from './web/felderítés/rssFolyamok';
-import { Csiribá, lekapar } from './web/kaparó';
-import { alap } from './web/mágikus_formulák/alap';
-import { portfolio } from './web/mágikus_formulák/portfolio';
+const könyvtár = [
+  {
+    könyv: 'https://www.portfolio.hu/rss/all.xml',
+    mágikus_formula: portfolio,
+    tároló: hozz_létre_helyi_tárolót,
+  },
+  // {
+  //   könyv: 'https://www.portfolio.hu/rss/all.xml',
+  //   mágikus_formula: alap,
+  //   tároló: hozz_létre_helyi_tárolót,
+  // },
+];
 
-const rssUrl = 'https://www.portfolio.hu/rss/all.xml';
-fetchRSSFeed(rssUrl).then((links) => {
-  console.log('Extracted links:', links);
-});
+async function tájékozódj() {
+  könyvtár.forEach(async ({ könyv, mágikus_formula: mágikus_formulával, tároló: és_tárold_el }) => {
+    const oldalak = await tépd_ki_az_oldalakat(könyv);
 
-// Get the URL from command-line arguments
-const url = process.argv[2];
-
-if (!url) {
-  console.error('Adj meg egy URL-t!');
-  process.exit(1);
-}
-
-const portfolioOldal = (url: string) => url.includes('portfolio.hu');
-
-const mágikus_formula = (url: string): (($: cheerio.CheerioAPI) => Promise<Csiribá>) =>
-  portfolioOldal(url) ? portfolio : alap;
-
-async function processRssFeed(rssUrl: string) {
-  const regex = /www\.([^\.]+)\./;
-  const találat = url.match(regex);
-  const fájlnév = találat ? `${találat[1]}.json` : 'ismeretlen.json';
-
-  try {
-    const links = await fetchRSSFeed(rssUrl);
     await Promise.all(
-      links.map(async (link, index) => {
-        const formula = mágikus_formula(link);
-        await lekapar(link, formula, `${fájlnév}_${index}.json`);
-      }),
+      oldalak.map(
+        async (az_oldalt, oldalszám_alapján) =>
+          await próbáld_meg(
+            lekaparni(mágikus_formulával, az_oldalt, és_tárold_el(oldalszám_alapján)),
+          ),
+      ),
     );
-    console.log('Kész!');
-  } catch (error) {
-    console.error('Hiba:', error);
-  }
+  });
 }
 
-processRssFeed(rssUrl);
+try {
+  tájékozódj();
+  console.log('Sikeresen lefutott a program.');
+} catch (err) {
+  console.error(err);
+}

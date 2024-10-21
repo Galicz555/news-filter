@@ -1,43 +1,27 @@
-import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
-import { flow } from 'fp-ts/lib/function';
-import * as fs from 'fs';
+import { flow as egymásután } from 'fp-ts/lib/function';
 
-import { Alap } from './mágikus_formulák/alap';
-import { Portfolio } from './mágikus_formulák/portfolio';
+import { Tároló } from '@/tárolók/helyi';
+import { Csiribá, csiribá } from '@/utils/csiribu/csiribá';
+import { töltsd_be_a_htmlt_cheerioval as majd_töltsd_be_a_htmlt_cheerioval } from '@/utils/csiribu/műveletek';
+import { hívd_le_az_oldalt_axiossal } from '@/utils/kérések/szerez';
+import { szedd_ki_a_válaszból_az_adatot } from '@/utils/kérések/általános';
+import { alakítsd_JSON_szöveggé } from '@/utils/rendszer/fájl';
 
-export type Csiribá = Alap | Portfolio;
-
-export async function lekapar(
-  url: string,
-  mágikus_formula: ($: cheerio.CheerioAPI) => Promise<Csiribá>,
-  fájlnév: string,
+export async function lekapar<T, K>(
+  mágikus_formula: ($: cheerio.CheerioAPI) => Csiribá<T>,
+  oldal: string,
+  és_tárold_el: (szöveg: string) => Tároló<K>,
 ) {
-  const dolgozd_fel = flow(
-    hívd_le_az_oldalt_axiossal,
-    szedd_ki_az_axiosból_a_htmlt,
-    töltsd_be_a_htmlt_cheerioval,
+  const a_választ = await hívd_le_az_oldalt_axiossal(oldal);
+
+  const dolgozd_fel = egymásután(
+    szedd_ki_a_válaszból_az_adatot,
+    majd_töltsd_be_a_htmlt_cheerioval,
     (csiribu) => csiribá(csiribu, mágikus_formula),
-    (adat) => írj_jsont(adat, fájlnév),
+    alakítsd_JSON_szöveggé,
+    és_tárold_el,
   );
 
-  await dolgozd_fel(url);
+  dolgozd_fel(a_választ);
 }
-
-const hívd_le_az_oldalt_axiossal = async (url: string): Promise<AxiosResponse<any, any>> =>
-  await axios.get(url);
-
-const szedd_ki_az_axiosból_a_htmlt = async (
-  válasz: Promise<AxiosResponse<any, any>>,
-): Promise<string> => (await válasz).data;
-
-const töltsd_be_a_htmlt_cheerioval = async (html: Promise<string>): Promise<cheerio.CheerioAPI> =>
-  cheerio.load(await html);
-
-const csiribá = async (
-  $: Promise<cheerio.CheerioAPI>,
-  mágikus_formula: ($: cheerio.CheerioAPI) => Promise<Csiribá>,
-) => mágikus_formula(await $);
-
-const írj_jsont = async (adat: Promise<Csiribá>, fájlnév: string) =>
-  fs.promises.writeFile(fájlnév, JSON.stringify(await adat, null, 2));

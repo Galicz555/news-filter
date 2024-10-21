@@ -1,5 +1,7 @@
 import * as cheerio from 'cheerio';
 
+export const töltsd_be_a_htmlt_cheerioval = (html: string) => cheerio.load(html);
+
 export const gyűjtsd_ki = ($: cheerio.CheerioAPI, selector: string): string[] => {
   return $(selector)
     .map((_, el) => $(el).text())

@@ -2688,6 +2688,7 @@ alakíthatóság
 alakító
 alakítódik
 alakított
+alakítsd
 alakmaró
 alakmás
 alakok
@@ -40548,6 +40549,7 @@ fajlagosság
 fájlal
 fájlnév
 fájlok
+fájlt
 fajnemesítés
 fajnemesítési
 fajnév
@@ -51185,6 +51187,7 @@ formula
 formulák
 formuláré
 formuláskönyv
+formulával
 formuláz
 forog
 forr
@@ -63820,6 +63823,7 @@ hózápor
 hozás
 hozat
 hozatal
+hozd
 hozható
 hózivatar
 hozó
@@ -63832,6 +63836,7 @@ hőzöng
 hozott
 hozsanna
 hozsannázik
+hozz
 hozzá
 hozzáábrándozik
 hozzáad
@@ -74440,10 +74445,12 @@ készfizető
 készgyártmány
 Keszi
 készít
+készíteni
 készítés
 készítget
 készítmény
 készítő
+készíts
 készíttet
 keszkenő
 készkiadás
@@ -82438,6 +82445,7 @@ könyvtábla-mező
 könyvtámasz
 könyvtámasztó
 könyvtár
+könyvtára
 könyvtárak
 könyvtáraz
 könyvtárbejegyzés
@@ -108003,6 +108011,7 @@ nevetségesség
 nevettet
 nevettető
 nevez
+nevezd
 nevezéktan
 nevezés
 nevezet
@@ -111475,6 +111484,7 @@ oldalági
 oldalágon
 oldalajtó
 oldalak
+oldalakat
 oldalas
 oldalaz
 oldalazó
@@ -121056,6 +121066,7 @@ próbakő
 próbakocsi
 próbál
 próbalámpa
+próbáld
 próbaléggömb
 próbalemez
 próbalevonat
@@ -121063,6 +121074,7 @@ próbalevonat-készítés
 próbálgat
 próbálgatás
 próbálgató
+próbálj
 próbálkozás
 próbálkozáso>
 próbálkozik
@@ -123010,6 +123022,7 @@ rákbeteg
 rákbetegség
 rákcsapda
 rákcsapda-szelep
+rakd
 rákebelez
 rákefél
 rákel
@@ -138213,6 +138226,7 @@ szövegbeli
 szövegé
 szövegecske
 szövegegyeztető
+szövegek
 szövegeket
 szövegel
 szövegelemzés
@@ -138233,6 +138247,7 @@ szövegezésileg
 szövegező
 szövegfile
 szövegfilmezés
+szöveggel
 szöveggyűjtemény
 szöveghamisítás
 szöveghely
@@ -139204,6 +139219,7 @@ tájékozatlanság
 tájékozatlanul
 tájékozódás
 tájékozódik
+tájékozódj
 tájékozódó
 tájékozott
 tájékozottság
@@ -140346,9 +140362,11 @@ tarokkozik
 tarol
 tárol
 tárolás
+tárold
 tároló
 tárolódik
 tárolóegység
+tárolót
 tárolt
 tárolva
 taróoszlop
@@ -142250,6 +142268,7 @@ teozófiai
 teozófus
 tép
 tépáz
+tépd
 tépdel
 tépdes
 tépeget
@@ -151360,6 +151379,8 @@ Utricularia
 útviszonyok
 útvonal
 útvonal-megállapí
+útvonalak
+útvonalat
 útvonalbérlet
 üveg
 üvegablak
@@ -152323,6 +152344,7 @@ válasz-levelezőlap
 válaszadás
 válaszadó
 válaszbeszéd
+válaszból
 válaszboríték
 válaszfal
 válaszirat
