@@ -1,7 +1,6 @@
 import * as cheerio from 'cheerio';
 
 import { Csiribá } from '@/utils/csiribu/csiribá';
-
 import {
   gyűjtsd_ki_a_sorokat_ömlesztve,
   töröld_ami_ezek_alatt_van,
@@ -10,13 +9,13 @@ import { tisztítsd_meg_a_szöveget } from '@/utils/áramlatok/szöveg';
 import { ha_nincs_szöveg } from '@/utils/szövegek/fertőtlenít';
 import { flow as egymásután } from 'fp-ts/lib/function';
 
-export type PortfolioAdat = {
+export type TelexAdat = {
   szöveg: string;
 };
 
-export type Portfolio = Csiribá<PortfolioAdat>;
+export type Telex = Csiribá<TelexAdat>;
 
-export const portfolio = ($: cheerio.CheerioAPI): Portfolio => {
+export const telex = ($: cheerio.CheerioAPI): Telex => {
   const dolgozd_fel = (cél: string) =>
     egymásután(
       töröld_ami_ezek_alatt_van,
@@ -26,7 +25,7 @@ export const portfolio = ($: cheerio.CheerioAPI): Portfolio => {
     );
 
   return {
-    szöveg: dolgozd_fel('.pfarticle')($, [
+    szöveg: dolgozd_fel('.article-html-content')($, [
       '.related',
       '.tags',
       '.mainimage-source',

@@ -9,13 +9,11 @@ export type HelybenTároló = Tároló<HelyiMód>;
 
 export type Tároló<T> = T;
 
-export const hozz_létre_helyi_tárolót = (oldalszám: number) => (szöveggel: string) =>
-  próbálj_meg(
-    készíteni_fájlt(
-      szöveggel,
-      ide(
-        'cikkek_könyvtára',
-        `${és_nevezd_el_könyv_alapján('https://www.portfolio.hu/rss/all.xml')}_${oldalszám}.json`,
+export const hozz_létre_helyi_tárolót =
+  (könyvcím: string, oldalszám: number) => (szöveggel: string) =>
+    próbálj_meg(
+      készíteni_fájlt(
+        szöveggel,
+        ide('cikkek_könyvtára', `${és_nevezd_el_könyv_alapján(könyvcím)}_${oldalszám}.json`),
       ),
-    ),
-  );
+    );

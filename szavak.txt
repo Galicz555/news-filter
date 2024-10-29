@@ -111994,6 +111994,7 @@ omlatag
 ömlesztés
 ömlesztet
 ömlesztett
+ömlesztve
 omlett
 omlik
 ömlik
@@ -129633,6 +129634,8 @@ sorminta
 sörnyitó
 sornyomtató
 sórög
+sorok
+sorokat
 soroksári
 sorol
 sorolás
@@ -143675,6 +143678,7 @@ tisztított
 tisztítótűz
 tisztítóvessző
 tisztítóvessző-tartó
+tisztítsd
 tisztíttat
 tisztjelölt
 tisztképző

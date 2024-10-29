@@ -19,16 +19,15 @@ export const gyűjtsd_ki_célzottan = (
     .get();
 };
 
-export const gyűjtsd_ki_az_ömlesztett_szöveget = ($: cheerio.CheerioAPI, cél: string) => {
+export const gyűjtsd_ki_a_sorokat_ömlesztve = ($: cheerio.CheerioAPI, cél: string) => {
   return $(cél)
     .contents()
-    .filter(
-      (_, el) =>
-        el.type === 'text' ||
-        (el.type === 'tag' && el.tagName !== 'script' && el.tagName !== 'style'),
-    )
-    .map((_, el) => $(el).text().trim())
-    .get()
-    .filter((text) => text.length > 0)
-    .join(' ');
+    .map((_, el) => $(el).text())
+    .get();
+};
+
+export const töröld_ami_ezek_alatt_van = ($: cheerio.CheerioAPI, cél: string[]) => {
+  cél.forEach((cél) => $(cél).remove());
+
+  return $;
 };
