@@ -21367,6 +21367,7 @@ cikk-cakk
 cikkcakk
 cikkecske
 cikkek
+cikkeket
 cikkely
 cikkelyez
 cikkezik
@@ -38905,6 +38906,7 @@ erszényháló
 értékek
 értékel
 értékelés
+értékelések
 értékelhető
 értékelmélet
 értékelő
@@ -38991,6 +38993,7 @@ erszényháló
 értelmeződik
 értelmezően
 értelmezői
+értelmezz
 értelmi
 értelmi-érzelmi
 értelmileg
@@ -69301,6 +69304,7 @@ jelentőségteljes
 jelentőségteljesen
 jelentőségű
 jelentősen
+jelentsd
 jelenvaló
 jelenvalóság
 jelenvoltak
@@ -71158,6 +71162,7 @@ kapcsolóbillentyű
 kapcsolódás
 kapcsolódhatik
 kapcsolódik
+kapcsolódj
 kapcsolódó
 kapcsológomb
 kapcsolóhorog
@@ -156520,6 +156525,7 @@ világosító
 világoskék
 világosodás
 világosodik
+világosodj
 világosság
 világosságban
 világossárga

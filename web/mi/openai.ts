@@ -1,0 +1,42 @@
+import OpenAIApi from 'openai';
+import fs from 'fs';
+import 'dotenv/config';
+
+const kapcsolódj_az_openapihoz = () => {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('Nincs OPENAI_API_KEY');
+  }
+  return new OpenAIApi({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+};
+
+// export const processMultipleFiles = async (filePath: string) => {
+//   const files = await fs.promises.readdir(filePath);
+//   const promises = files.map(async (file) => {
+//     const message = await processFile(path.join(filePath, file));
+//     return message;
+//   });
+//   return Promise.all(promises);
+// };
+
+export const processFile = (filePath: string) =>
+  kapcsolódj_az_openapihoz()
+    .chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Készítsen elemzést a történelmi pénzügyi adatok alapján a jövőbeli piaci mozgások előrejelzéséhez, de legyen érthető egy általános iskolás számára is. Azt is szeretném ha a végére hat 0-100-as skálán értékelnéd hogy mekkora hatással a 35 éves web fejlesztőre Magyarországon,a következő formátumban {¤jóságosság¤: , ¤filozófikusság¤: , ¤viccesség¤: , ¤meglepőség¤: , ¤alaposság¤: , ¤pénzügyi_haszon¤: }.',
+        },
+        { role: 'user', content: JSON.parse(fs.readFileSync(filePath, 'utf-8')).szöveg },
+      ],
+    })
+    .then((válasz) =>
+      válasz?.choices &&
+      válasz.choices.length > 0 &&
+      typeof válasz.choices[0].message.content === 'string'
+        ? válasz.choices[0].message.content
+        : 'Openai nem adott választ.',
+    );
