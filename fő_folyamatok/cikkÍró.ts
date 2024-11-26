@@ -16,7 +16,7 @@ function írj_cikket(útvonal: string, index: number) {
       index,
     )(
       alakítsd_JSON_szöveggé({
-        értékelés: pép?.értékelés ? new Map(Object.entries(pép?.értékelés)) : undefined,
+        értékelés: pép?.értékelés,
         szöveg: pép?.cikkSzöveg,
       }),
     );
@@ -26,15 +26,22 @@ function írj_cikket(útvonal: string, index: number) {
 function dolgozd_fel_az_értelmezett_cikket(szöveg: string, specJel: string) {
   const regex = /({[^}]*})\s*/;
   const match = szöveg.replace(new RegExp(specJel, 'g'), '"').match(regex);
+
+  let output: {
+    cikkSzöveg?: string;
+    értékelés?: Record<string, number>;
+  } = {};
+
+  output.cikkSzöveg = szöveg.replace(match ? match[0] : '', '');
+
   if (match) {
     const jsonString = match[1];
     try {
-      const értékelés = JSON.parse(jsonString.replace(/(\w+):/g, '"$1":'));
-      const cikkSzöveg = szöveg.replace(match[0], '');
-      return { értékelés, cikkSzöveg };
+      output.értékelés = JSON.parse(jsonString.replace(/(\w+):/g, '"$1":'));
     } catch (error) {
       console.error('Invalid JSON format:', error);
     }
   }
-  return undefined;
+
+  return output;
 }
