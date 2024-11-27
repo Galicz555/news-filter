@@ -1,7 +1,5 @@
-import { próbáld_meg } from '@/utils/kérések/próbál';
 import { tépd_ki_az_oldalakat } from '@/web/felderítés/rssFolyamok';
 import { lekapar as lekaparni } from '@/web/kaparó';
-import { nevezd_el_könyv_alapján as és_nevezd_el_könyv_alapján } from '@/utils/szövegek/elnevez';
 // import { alap } from './web/mágikus_formulák/alap';
 import { portfolio } from '@/web/mágikus_formulák/portfolio';
 // import { telex } from '@/web/mágikus_formulák/telex';
@@ -26,27 +24,14 @@ const könyvtár = [
   // },
 ];
 
-export async function tájékozódj(
-  és_tárold_el: (
-    könyvtár: string,
-    könyvcím: string,
-    oldalszám: number,
-  ) => (szöveggel: string) => Promise<void>,
-) {
-  könyvtár.forEach(async ({ könyv, mágikus_formula: mágikus_formulával }) => {
-    const oldalak = await tépd_ki_az_oldalakat(könyv);
-
-    await Promise.all(
-      oldalak.map(
-        async (az_oldalt, oldalszám_alapján) =>
-          await próbáld_meg(
-            lekaparni(
-              mágikus_formulával,
-              az_oldalt,
-              és_tárold_el('cikkek', és_nevezd_el_könyv_alapján(könyv), oldalszám_alapján),
-            ),
+export const tájékozódj = async () =>
+  await Promise.all(
+    könyvtár.map(
+      async ({ könyv, mágikus_formula: mágikus_formulával }) =>
+        await Promise.all(
+          (await tépd_ki_az_oldalakat(könyv)).map(
+            async (az_oldalt) => await lekaparni(mágikus_formulával, az_oldalt),
           ),
-      ),
-    );
-  });
-}
+        ),
+    ),
+  );

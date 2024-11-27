@@ -1,5 +1,4 @@
 import OpenAIApi from 'openai';
-import fs from 'fs';
 import 'dotenv/config';
 
 const kapcsolódj_az_openapihoz = () => {
@@ -20,7 +19,7 @@ const kapcsolódj_az_openapihoz = () => {
 //   return Promise.all(promises);
 // };
 
-export const processFile = (filePath: string) =>
+export const processFile = (item: { szöveg: string }) =>
   kapcsolódj_az_openapihoz()
     .chat.completions.create({
       model: 'gpt-3.5-turbo',
@@ -30,7 +29,7 @@ export const processFile = (filePath: string) =>
           content:
             'Készítsen elemzést a történelmi pénzügyi adatok alapján a jövőbeli piaci mozgások előrejelzéséhez, de legyen érthető egy általános iskolás számára is. Azt is szeretném ha a végére hat 0-100-as skálán értékelnéd hogy mekkora hatással van a 35 éves web fejlesztőre Magyarországon,a következő formátumban {¤jóságosság¤: , ¤filozófikusság¤: , ¤viccesség¤: , ¤meglepőség¤: , ¤alaposság¤: , ¤pénzügyi_haszon¤: }.',
         },
-        { role: 'user', content: JSON.parse(fs.readFileSync(filePath, 'utf-8')).szöveg },
+        { role: 'user', content: item.szöveg },
       ],
     })
     .then((válasz) =>

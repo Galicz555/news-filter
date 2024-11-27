@@ -1,26 +1,25 @@
 import { hozz_létre_helyi_tárolót } from '@/tárolók/helyi';
-import { alakítsd_JSON_szöveggé, olvass_fájlokat } from '@/utils/rendszer/fájl';
-import fs from 'fs';
-import path from 'path';
+import { alakítsd_JSON_szöveggé } from '@/utils/rendszer/fájl';
 
-const értelmezettCikkekKönyvtárából = path.join(__dirname, '../értelmezett_cikkek');
-
-export const írj_cikkeket = () => olvass_fájlokat(írj_cikket)(értelmezettCikkekKönyvtárából);
-
-function írj_cikket(útvonal: string, index: number) {
-  fs.readFile(útvonal, 'utf8', (_, data) => {
-    const pép = dolgozd_fel_az_értelmezett_cikket(JSON.parse(data).szöveg, '¤');
-    hozz_létre_helyi_tárolót(
-      'új_cikkek',
-      'enlightment',
-      index,
-    )(
-      alakítsd_JSON_szöveggé({
-        értékelés: pép?.értékelés,
-        szöveg: pép?.cikkSzöveg,
-      }),
-    );
+export const írj_cikkeket = async (könyvek: Promise<string[][]>) =>
+  (await könyvek).forEach((könyv, index) => {
+    könyv.forEach((oldal, i) => {
+      írj_cikket(oldal, index * 10 + i);
+    });
   });
+
+function írj_cikket(szöveg: string, index: number) {
+  const feldolgozott = dolgozd_fel_az_értelmezett_cikket(szöveg, '¤');
+  hozz_létre_helyi_tárolót(
+    'cikkek',
+    'enlightment',
+    index,
+  )(
+    alakítsd_JSON_szöveggé({
+      értékelés: feldolgozott?.értékelés,
+      szöveg: feldolgozott?.cikkSzöveg,
+    }),
+  );
 }
 
 function dolgozd_fel_az_értelmezett_cikket(szöveg: string, specJel: string) {
