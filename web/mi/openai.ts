@@ -13,13 +13,13 @@ const kapcsolódj_az_openapihoz = () => {
 // export const processMultipleFiles = async (filePath: string) => {
 //   const files = await fs.promises.readdir(filePath);
 //   const promises = files.map(async (file) => {
-//     const message = await processFile(path.join(filePath, file));
+//     const message = await open_api(path.join(filePath, file));
 //     return message;
 //   });
 //   return Promise.all(promises);
 // };
 
-export const processFile = (item: { szöveg: string }) =>
+export const open_api = (item: { szöveg: string }) =>
   kapcsolódj_az_openapihoz()
     .chat.completions.create({
       model: 'gpt-3.5-turbo',
