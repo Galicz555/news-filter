@@ -1,5 +1,6 @@
 import OpenAIApi from 'openai';
 import 'dotenv/config';
+import { z } from 'zod';
 
 const kapcsolódj_az_openapihoz = () => {
   if (!process.env.OPENAI_API_KEY) {
@@ -19,6 +20,16 @@ const kapcsolódj_az_openapihoz = () => {
 //   return Promise.all(promises);
 // };
 
+const válasz_minta = z.object({
+  choices: z.array(
+    z.object({
+      message: z.object({
+        content: z.string(),
+      }),
+    }),
+  ),
+});
+
 export const open_api = (item: { szöveg: string }) =>
   kapcsolódj_az_openapihoz()
     .chat.completions.create({
@@ -32,10 +43,10 @@ export const open_api = (item: { szöveg: string }) =>
         { role: 'user', content: item.szöveg },
       ],
     })
-    .then((válasz) =>
-      válasz?.choices &&
-      válasz.choices.length > 0 &&
-      typeof válasz.choices[0].message.content === 'string'
-        ? válasz.choices[0].message.content
-        : 'Openai nem adott választ.',
-    );
+    .then((válasz) => {
+      try {
+        return válasz_minta.parse(válasz).choices[0].message.content;
+      } catch (error) {
+        return 'open_api nem adott vissza megfelelő választ';
+      }
+    });

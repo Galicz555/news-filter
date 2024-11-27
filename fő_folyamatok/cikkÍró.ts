@@ -24,9 +24,18 @@ const írj_cikket = (
 function dolgozd_fel_az_oldalt(szöveg: string, specJel: string) {
   const match = szöveg.replace(new RegExp(specJel, 'g'), '"').match(/({[^}]*})\s*/);
 
+  let értékelés: Értékelés | undefined = undefined;
+  if (match) {
+    try {
+      értékelés = JSON.parse(match[1].replace(/(\w+):/g, '"$1":')) as Értékelés;
+    } catch (error) {
+      console.error('JSON parsing error:', error);
+    }
+  }
+
   return {
     cikkSzöveg: szöveg.replace(match ? match[0] : '', ''),
-    értékelés: match ? (JSON.parse(match[1].replace(/(\w+):/g, '"$1":')) as Értékelés) : undefined,
+    értékelés,
   };
 }
 
