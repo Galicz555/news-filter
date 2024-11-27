@@ -38987,6 +38987,7 @@ erszényháló
 értelmetlenség
 értelmetlenül
 értelmez
+értelmezd
 értelmezés
 értelmezhetőség
 értelmező
@@ -42664,6 +42665,7 @@ feldolgozódik
 feldolgozóegység
 feldolgozóipar
 feldolgozott
+feldolgozóval
 feldolgozta
 feldolgoztat
 féldolláros
@@ -82371,6 +82373,7 @@ könyvecske
 könyvégetés
 könyvéhes
 könyvek
+könyveket
 könyvel
 könyvelés
 könyvelő

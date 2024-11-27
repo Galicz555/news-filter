@@ -1,5 +1,5 @@
 import { tépd_ki_az_oldalakat } from '@/web/felderítés/rssFolyamok';
-import { lekapar as lekaparni } from '@/web/kaparó';
+import { lekapar as kapard_le } from '@/web/kaparó';
 // import { alap } from './web/mágikus_formulák/alap';
 import { portfolio } from '@/web/mágikus_formulák/portfolio';
 // import { telex } from '@/web/mágikus_formulák/telex';
@@ -30,7 +30,7 @@ export const tájékozódj = async () =>
       async ({ könyv, mágikus_formula: mágikus_formulával }) =>
         await Promise.all(
           (await tépd_ki_az_oldalakat(könyv)).map(
-            async (az_oldalt) => await lekaparni(mágikus_formulával, az_oldalt),
+            async (az_oldalt) => await kapard_le(mágikus_formulával, az_oldalt),
           ),
         ),
     ),
