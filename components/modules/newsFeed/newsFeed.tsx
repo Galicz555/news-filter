@@ -14,6 +14,7 @@ export default function ImageCardFeed() {
   const [imageCards, setImageCards] = useState<Array<ImageCardProps>>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const [ref, inView] = useInView();
   const settings = Cookies.get('settings');
   const settingsObj = JSON.parse(settings || '{}');
@@ -25,12 +26,18 @@ export default function ImageCardFeed() {
   const settingsMapRef = useRef(settingsMap);
 
   const loadMoreImageCards = useCallback(async () => {
+    if (!hasMore) return;
+
     setLoading(true);
     const newImageCards = await fetchImageCards(page, 10, settingsMapRef.current);
-    setImageCards((prevImageCards) => [...prevImageCards, ...newImageCards]);
-    setPage((prevPage) => prevPage + 1);
+    if (newImageCards.length === 0) {
+      setHasMore(false);
+    } else {
+      setImageCards((prevImageCards) => [...prevImageCards, ...newImageCards]);
+      setPage((prevPage) => prevPage + 1);
+    }
     setLoading(false);
-  }, [page]);
+  }, [page, hasMore]);
 
   // Initial load
   useEffect(() => {
@@ -40,16 +47,19 @@ export default function ImageCardFeed() {
       setImageCards(initialImageCards);
       setPage(1);
       setLoading(false);
+      if (initialImageCards.length === 0) {
+        setHasMore(false);
+      }
     };
     initialLoad();
   }, []);
 
   // Load more when inView
   useEffect(() => {
-    if (inView && !loading) {
+    if (inView && !loading && hasMore) {
       loadMoreImageCards();
     }
-  }, [inView, loadMoreImageCards, loading]);
+  }, [inView, loadMoreImageCards, loading, hasMore]);
 
   return (
     <div className="flex flex-wrap gap-4">

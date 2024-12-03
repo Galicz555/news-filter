@@ -10,18 +10,9 @@ export interface ImageCardProps {
   scores?: Map<string, string>;
 }
 
-export default function ImageCard({
-  image,
-  title,
-  priority,
-  href,
-  scores,
-}: ImageCardProps) {
+export default function ImageCard({ image, title, priority, href, scores }: ImageCardProps) {
   return (
-    <Card
-      className="flex-grow w-full sm:w-[300px] overflow-hidden shadow-lg"
-      href={href}
-    >
+    <Card className="flex-grow w-full sm:w-[300px] overflow-hidden shadow-lg" href={href}>
       <CardContent className="p-0">
         <div className="relative h-[200px] w-full">
           <Image
@@ -35,7 +26,7 @@ export default function ImageCard({
         </div>
       </CardContent>
       <CardFooter className="p-4 flex-col">
-        <h3 className="text-lg font-semibold">{title}</h3>
+        <h3 className="text-lg font-semibold line-clamp-3">{title}</h3>
         <div className="grid grid-cols-6 gap-4">
           {scores &&
             Array.from(scores.entries()).map(([key, value]) => (
