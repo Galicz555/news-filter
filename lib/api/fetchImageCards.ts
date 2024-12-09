@@ -49,9 +49,9 @@ const sumArticleScores = (
 
 async function getArticleContent(index: number): Promise<Article> {
   const key = `cikkek:enlightment:${index}`;
-  const content = await redis.get(key);
+  let content = await redis.get(key);
   if (!content) {
-    throw new Error(`Article with index ${index} not found`);
+    content = { szöveg: 'Nem található a cikk', értékelés: {} };
   }
 
   // const { szöveg, értékelés = {} } = JSON.parse(content);
