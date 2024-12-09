@@ -1,7 +1,8 @@
 'use server';
 
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
+import { világosodj_meg } from '@/utils/áramlatok/fő';
+import { Redis } from '@upstash/redis';
 
 type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
 
@@ -22,27 +23,10 @@ const scoreKeyMap: Record<string, ScoreKey> = {
   pénzügyi_haszon: '🤑',
 };
 
-async function getArticleContent(file: string): Promise<Article> {
-  const content = fs.readFileSync(`./cikkek/${file}`, 'utf8');
-  const { szöveg, értékelés = {} } = JSON.parse(content);
-
-  const scores = new Map<ScoreKey, string>(
-    Object.entries(értékelés)
-      .map(([key, value]) => {
-        const scoreKey = scoreKeyMap[key];
-        return scoreKey ? [scoreKey, (value as number).toString()] : undefined;
-      })
-      .filter((entry): entry is [ScoreKey, string] => entry !== undefined),
-  );
-
-  return {
-    id: uuidv4(),
-    title: szöveg,
-    href: `/article/${file}`,
-    image: `/placeholder.jpeg`,
-    scores,
-  };
-}
+const redis = new Redis({
+  url: 'https://poetic-hagfish-23768.upstash.io',
+  token: 'AVzYAAIjcDFkZGYzNmI2Njc2YmY0N2E2OGZhMzQwYWY1ZmVlYjFjNXAxMA',
+});
 
 const sumArticleScores = (
   image: {
@@ -63,13 +47,45 @@ const sumArticleScores = (
   return sum;
 };
 
+async function getArticleContent(index: number): Promise<Article> {
+  const key = `cikkek:enlightment:${index}`;
+  const content = await redis.get(key);
+  if (!content) {
+    throw new Error(`Article with index ${index} not found`);
+  }
+
+  // const { szöveg, értékelés = {} } = JSON.parse(content);
+  const { szöveg, értékelés = {} } = content as {
+    szöveg: string;
+    értékelés: Record<string, number>;
+  };
+
+  const scores = new Map<ScoreKey, string>(
+    Object.entries(értékelés)
+      .map(([key, value]) => {
+        const scoreKey = scoreKeyMap[key];
+        return scoreKey ? [scoreKey, (value as number).toString()] : undefined;
+      })
+      .filter((entry): entry is [ScoreKey, string] => entry !== undefined),
+  );
+
+  return {
+    id: uuidv4(),
+    title: szöveg,
+    href: `/article/${index}`,
+    image: `/placeholder.jpeg`,
+    scores,
+  };
+}
+
 export async function fetchImageCards(
   page: number,
   limit: number,
   settings: Map<ScoreKey, string>,
 ): Promise<Article[]> {
-  const files = fs.readdirSync('./cikkek');
-  const articles = await Promise.all(files.map(getArticleContent));
+  const articles = await Promise.all(
+    Array.from({ length: limit }, (_, i) => getArticleContent(page * limit + i)),
+  );
 
   const sortedArticles = articles.sort(
     (a, b) => sumArticleScores(b, settings) - sumArticleScores(a, settings),
@@ -78,9 +94,18 @@ export async function fetchImageCards(
   return sortedArticles.slice(page * limit, (page + 1) * limit);
 }
 
-export async function fetchArticle(id: string): Promise<Article> {
-  return getArticleContent(id);
+export async function fetchArticle(index: number): Promise<Article> {
+  return getArticleContent(index);
 }
+
+export const fetchVilágosodás = async () => {
+  try {
+    világosodj_meg();
+    console.log('Sikeresen lefutott a program.');
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 // const generateImageCards = (page: number, limit: number) => {
 //   return Array.from({ length: limit }, (_, i) => ({
