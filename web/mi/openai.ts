@@ -30,8 +30,11 @@ const válasz_minta = z.object({
   ),
 });
 
-export const open_api = (item: { szöveg: string }) =>
-  kapcsolódj_az_openapihoz()
+export const open_api = async (item: { szöveg: string }) => {
+  console.log('open_api:', item.szöveg);
+  let result
+  try{
+    result = await kapcsolódj_az_openapihoz()
     .chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
@@ -50,3 +53,10 @@ export const open_api = (item: { szöveg: string }) =>
         return 'open_api nem adott vissza megfelelő választ';
       }
     });
+    } catch (error) {
+      console.error('open_api hiba:', error);
+      return 'open_api'
+   }
+   console.log('open_api result: END', result);
+ return result
+}

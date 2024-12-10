@@ -33,11 +33,9 @@ export const tájékozódj = async () =>
     könyvtár.map(
       async ({ könyv, mágikus_formula: mágikus_formulával }) =>
         await Promise.all(
-          (await tépd_ki_az_oldalakat(könyv)).map(async (az_oldalt, index) => {
-            console.log('tájékozódj:', index);
-            await delay(index * 1000); // Introduce a delay of 1 second for each item
-            return await kapard_le(mágikus_formulával, az_oldalt);
-          }),
+          (await tépd_ki_az_oldalakat(könyv)).map(async (az_oldalt) =>
+            await kapard_le(mágikus_formulával, az_oldalt)
+          ),
         ),
     ),
   );

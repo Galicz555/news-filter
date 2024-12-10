@@ -98,9 +98,9 @@ export async function fetchArticle(index: number): Promise<Article> {
   return getArticleContent(index);
 }
 
-export const fetchVilágosodás = () => {
+export const fetchVilágosodás = async() => {
   try {
-    világosodj_meg();
+    await világosodj_meg();
     console.log('Sikeresen lefutott a program.');
   } catch (err) {
     console.error(err);
