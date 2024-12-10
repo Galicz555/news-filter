@@ -45,9 +45,11 @@ function dolgozd_fel_az_oldalt(szöveg: string, specJel: string) {
   if (match) {
     try {
       const cleanedMatch = match[1].replace(/(\w+):\s*(?=,|})/g, '');
-      értékelés = JSON.parse(cleanedMatch[1].replace(/(\w+):/g, '"$1":')) as Értékelés;
+      const formattedJSON = cleanedMatch.replace(/(\w+):/g, '"$1":');
+      értékelés = JSON.parse(formattedJSON) as Értékelés;
     } catch (error) {
       console.error('JSON parsing error:', error);
+      console.error('Original match:', match[1]);
     }
   }
 
