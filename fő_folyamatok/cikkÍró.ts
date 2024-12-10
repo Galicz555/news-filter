@@ -23,6 +23,7 @@ const írj_cikket = async (
     értékelés: szöveg?.értékelés,
     szöveg: szöveg?.cikkSzöveg,
   });
+  console.log('tartalom:', index);
   const kulcs = `cikkek:enlightment:${index}`;
   await redis.set(kulcs, tartalom);
 
