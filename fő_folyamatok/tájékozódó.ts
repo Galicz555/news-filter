@@ -24,14 +24,19 @@ const könyvtár = [
   // },
 ];
 
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const tájékozódj = async () =>
   await Promise.all(
     könyvtár.map(
       async ({ könyv, mágikus_formula: mágikus_formulával }) =>
         await Promise.all(
-          (await tépd_ki_az_oldalakat(könyv)).map(
-            async (az_oldalt) => await kapard_le(mágikus_formulával, az_oldalt),
-          ),
+          (await tépd_ki_az_oldalakat(könyv)).map(async (az_oldalt, index) => {
+            await delay(index * 1000); // Introduce a delay of 1 second for each item
+            return await kapard_le(mágikus_formulával, az_oldalt);
+          }),
         ),
     ),
   );
