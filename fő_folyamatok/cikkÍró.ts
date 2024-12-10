@@ -4,9 +4,9 @@ import { alakítsd_JSON_szöveggé } from '@/utils/rendszer/fájl';
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
-  url: 'https://poetic-hagfish-23768.upstash.io',
-  token: 'AVzYAAIjcDFkZGYzNmI2Njc2YmY0N2E2OGZhMzQwYWY1ZmVlYjFjNXAxMA',
-});
+  url: 'https://light-ant-49725.upstash.io',
+  token: 'AcI9AAIjcDFhY2YxMzRmMjliZDk0MWVkOTJlMTdkNzA3ODdmYzVkNnAxMA',
+})
 
 export const írj_cikkeket = async (könyvek: Promise<string[][]>) =>
   (await könyvek).forEach((könyv, index) => {

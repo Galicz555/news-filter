@@ -24,9 +24,9 @@ const scoreKeyMap: Record<string, ScoreKey> = {
 };
 
 const redis = new Redis({
-  url: 'https://poetic-hagfish-23768.upstash.io',
-  token: 'AVzYAAIjcDFkZGYzNmI2Njc2YmY0N2E2OGZhMzQwYWY1ZmVlYjFjNXAxMA',
-});
+  url: 'https://light-ant-49725.upstash.io',
+  token: 'AcI9AAIjcDFhY2YxMzRmMjliZDk0MWVkOTJlMTdkNzA3ODdmYzVkNnAxMA',
+})
 
 const sumArticleScores = (
   image: {
