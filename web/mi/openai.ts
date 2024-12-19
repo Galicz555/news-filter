@@ -11,15 +11,6 @@ const kapcsolódj_az_openapihoz = () => {
   });
 };
 
-// export const processMultipleFiles = async (filePath: string) => {
-//   const files = await fs.promises.readdir(filePath);
-//   const promises = files.map(async (file) => {
-//     const message = await open_api(path.join(filePath, file));
-//     return message;
-//   });
-//   return Promise.all(promises);
-// };
-
 const válasz_minta = z.object({
   choices: z.array(
     z.object({
@@ -60,3 +51,12 @@ export const open_api = async (item: { szöveg: string }) => {
    console.log('open_api result: END', result);
  return result
 }
+
+// export const processMultipleFiles = async (filePath: string) => {
+//   const files = await fs.promises.readdir(filePath);
+//   const promises = files.map(async (file) => {
+//     const message = await open_api(path.join(filePath, file));
+//     return message;
+//   });
+//   return Promise.all(promises);
+// };

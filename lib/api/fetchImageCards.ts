@@ -25,7 +25,7 @@ const scoreKeyMap: Record<string, ScoreKey> = {
 
 const redis = new Redis({
   url: 'https://light-ant-49725.upstash.io',
-  token: 'AcI9AAIjcDFhY2YxMzRmMjliZDk0MWVkOTJlMTdkNzA3ODdmYzVkNnAxMA',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
 })
 
 const sumArticleScores = (
@@ -54,7 +54,6 @@ async function getArticleContent(index: number): Promise<Article> {
     content = { szöveg: 'Nem található a cikk', értékelés: {} };
   }
 
-  // const { szöveg, értékelés = {} } = JSON.parse(content);
   const { szöveg, értékelés = {} } = content as {
     szöveg: string;
     értékelés: Record<string, number>;
@@ -83,15 +82,18 @@ export async function fetchImageCards(
   limit: number,
   settings: Map<ScoreKey, string>,
 ): Promise<Article[]> {
+  const start = page * limit;
+  const end = start + limit;
+
   const articles = await Promise.all(
-    Array.from({ length: limit }, (_, i) => getArticleContent(page * limit + i)),
+    Array.from({ length: limit }, (_, i) => getArticleContent(start + i)),
   );
 
   const sortedArticles = articles.sort(
     (a, b) => sumArticleScores(b, settings) - sumArticleScores(a, settings),
   );
 
-  return sortedArticles.slice(page * limit, (page + 1) * limit);
+  return sortedArticles;
 }
 
 export async function fetchArticle(index: number): Promise<Article> {

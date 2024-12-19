@@ -5,7 +5,7 @@ import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
   url: 'https://light-ant-49725.upstash.io',
-  token: 'AcI9AAIjcDFhY2YxMzRmMjliZDk0MWVkOTJlMTdkNzA3ODdmYzVkNnAxMA',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
 })
 
 export const írj_cikkeket = async (könyvek: Promise<string[][]>) =>
@@ -26,17 +26,6 @@ const írj_cikket = async (
   console.log('tartalom:', index);
   const kulcs = `cikkek:enlightment:${index}`;
   await redis.set(kulcs, tartalom);
-
-  // hozz_létre_helyi_tárolót(
-  //   'cikkek',
-  //   'enlightment',
-  //   index,
-  // )(
-  //   alakítsd_JSON_szöveggé({
-  //     értékelés: szöveg?.értékelés,
-  //     szöveg: szöveg?.cikkSzöveg,
-  //   }),
-  // );
 };
 
 function dolgozd_fel_az_oldalt(szöveg: string, specJel: string) {
@@ -68,3 +57,14 @@ interface Értékelés {
   alaposság: number;
   pénzügyi_haszon: number;
 }
+
+  // hozz_létre_helyi_tárolót(
+  //   'cikkek',
+  //   'enlightment',
+  //   index,
+  // )(
+  //   alakítsd_JSON_szöveggé({
+  //     értékelés: szöveg?.értékelés,
+  //     szöveg: szöveg?.cikkSzöveg,
+  //   }),
+  // );

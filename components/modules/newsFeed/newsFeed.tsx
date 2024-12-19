@@ -30,7 +30,11 @@ export default function ImageCardFeed() {
 
     setLoading(true);
     const newImageCards = await fetchImageCards(page, 10, settingsMapRef.current);
-    if (newImageCards.length === 0) {
+    console.log('🚀 ~ loadMoreImageCards ~ newImageCards:', newImageCards);
+    if (
+      newImageCards.length === 0 ||
+      newImageCards.some((card) => card.title === 'Nem található a cikk')
+    ) {
       setHasMore(false);
     } else {
       setImageCards((prevImageCards) => [...prevImageCards, ...newImageCards]);
@@ -63,17 +67,21 @@ export default function ImageCardFeed() {
 
   return (
     <div className="flex flex-wrap gap-4">
-      {imageCards.map((card, index) => (
-        <ImageCard
-          key={card.id}
-          id={card.id}
-          image={card.image}
-          title={card.title}
-          href={card.href}
-          priority={index < 10}
-          scores={card.scores}
-        />
-      ))}
+      {imageCards.map((card, index) => {
+        if (card.title !== 'Nem található a cikk') {
+          return (
+            <ImageCard
+              key={card.id}
+              id={card.id}
+              image={card.image}
+              title={card.title}
+              href={card.href}
+              priority={index < 10}
+              scores={card.scores}
+            />
+          );
+        }
+      })}
       {loading &&
         Array.from({ length: 10 }).map((_, index) => (
           <ImageCardSkeleton key={`skeleton-${index}`} />

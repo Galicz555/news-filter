@@ -6,10 +6,10 @@ import { telex } from '@/web/mágikus_formulák/telex';
 // import { newYorkTimes } from './web/mágikus_formulák/newYorkTimes';
 
 const könyvtár = [
-  // {
-  //   könyv: 'https://www.portfolio.hu/rss/all.xml',
-  //   mágikus_formula: portfolio,
-  // },
+  {
+    könyv: 'https://www.portfolio.hu/rss/all.xml',
+    mágikus_formula: portfolio,
+  },
    {
      könyv: 'https://www.telex.hu/rss',
      mágikus_formula: telex,
