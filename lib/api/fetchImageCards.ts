@@ -83,7 +83,6 @@ export async function fetchImageCards(
   settings: Map<ScoreKey, string>,
 ): Promise<Article[]> {
   const start = page * limit;
-  const end = start + limit;
 
   const articles = await Promise.all(
     Array.from({ length: limit }, (_, i) => getArticleContent(start + i)),
