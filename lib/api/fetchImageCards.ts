@@ -10,8 +10,8 @@ interface Article {
   id: string;
   title: string;
   href: string;
-  image: string;
-  scores: Map<ScoreKey, string>;
+  image?: string;
+  scores?: Map<ScoreKey, string>;
 }
 
 const scoreKeyMap: Record<string, ScoreKey> = {
@@ -33,12 +33,15 @@ const sumArticleScores = (
     id: string;
     title: string;
     href: string;
-    image: string;
-    scores: Map<ScoreKey, string>;
+    image?: string;
+    scores?: Map<ScoreKey, string>;
   },
   settings: Map<ScoreKey, string>,
 ): number => {
   let sum = 0;
+  if (!image.scores) {
+    return sum;
+  }
   for (const [key, value] of image.scores) {
     if (settings.has(key) && settings.get(key)) {
       sum += parseInt(value, 10);

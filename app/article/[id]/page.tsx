@@ -14,14 +14,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <AnimatedContainer>
       <div style={{ position: 'relative' }}>
-        <Image
-          src={article?.image}
-          alt={article?.title}
-          fill
-          quality={100}
-          priority={true}
-          style={{ objectFit: 'cover' }}
-        />
+        {article.image && (
+          <Image
+            src={article?.image}
+            alt={article?.title}
+            fill
+            quality={100}
+            priority={true}
+            style={{ objectFit: 'cover' }}
+          />
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
           <article className="max-w-2xl w-full bg-white bg-opacity-20 backdrop-blur-lg rounded-xl shadow-lg overflow-hidden">

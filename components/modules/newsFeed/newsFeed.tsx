@@ -16,21 +16,20 @@ export default function ImageCardFeed() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [ref, inView] = useInView();
-  const settings = Cookies.get('settings');
-  const settingsObj = JSON.parse(settings || '{}');
+
   const settingsMap: Map<ScoreKey, string> = new Map(
-    Object.entries(settingsObj).filter(([key]) =>
+    Object.entries(JSON.parse(Cookies.get('settings') || '{}')).filter(([key]) =>
       ['😇', '😶‍🌫️', '😁', '😲', '🤓', '🤑'].includes(key),
     ) as [ScoreKey, string][],
   );
   const settingsMapRef = useRef(settingsMap);
+  const initialized = useRef(false);
 
   const loadMoreImageCards = useCallback(async () => {
     if (!hasMore) return;
 
     setLoading(true);
     const newImageCards = await fetchImageCards(page, 10, settingsMapRef.current);
-    console.log('🚀 ~ loadMoreImageCards ~ newImageCards:', newImageCards);
     if (
       newImageCards.length === 0 ||
       newImageCards.some((card) => card.title === 'Nem található a cikk')
@@ -46,7 +45,6 @@ export default function ImageCardFeed() {
   // Initial load
   useEffect(() => {
     const initialLoad = async () => {
-      setLoading(true);
       const initialImageCards = await fetchImageCards(0, 10, settingsMapRef.current);
       setImageCards(initialImageCards);
       setPage(1);
@@ -55,7 +53,11 @@ export default function ImageCardFeed() {
         setHasMore(false);
       }
     };
-    initialLoad();
+
+    if (!initialized.current) {
+      initialized.current = true;
+      initialLoad();
+    }
   }, []);
 
   // Load more when inView
@@ -67,21 +69,22 @@ export default function ImageCardFeed() {
 
   return (
     <div className="flex flex-wrap gap-4">
-      {imageCards.map((card, index) => {
-        if (card.title !== 'Nem található a cikk') {
-          return (
-            <ImageCard
-              key={card.id}
-              id={card.id}
-              image={card.image}
-              title={card.title}
-              href={card.href}
-              priority={index < 10}
-              scores={card.scores}
-            />
-          );
-        }
-      })}
+      {!loading &&
+        imageCards.map((card, index) => {
+          if (card.title !== 'Nem található a cikk') {
+            return (
+              <ImageCard
+                key={card.id}
+                id={card.id}
+                image={card.image}
+                title={card.title}
+                href={card.href}
+                priority={index < 10}
+                scores={card.scores}
+              />
+            );
+          }
+        })}
       {loading &&
         Array.from({ length: 10 }).map((_, index) => (
           <ImageCardSkeleton key={`skeleton-${index}`} />

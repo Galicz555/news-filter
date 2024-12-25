@@ -1,13 +1,10 @@
-// import ImageCardFeed from '@/components/modules/newsFeed/newsFeed';
+import ImageCardFeed from '@/components/modules/newsFeed/newsFeed';
 import BasePageLayout from '@/components/ui/layout/page/base/layout';
 
-export default function Home() {
+export default function Items() {
   return (
     <BasePageLayout
-      // mainContent=
-      // {
-      //   <ImageCardFeed />
-      // }
+      mainContent={<ImageCardFeed />}
       footerContent={<div>Made by Galicz Mihály</div>}
     ></BasePageLayout>
   );
