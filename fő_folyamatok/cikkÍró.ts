@@ -49,6 +49,27 @@ function dolgozd_fel_az_oldalt(szöveg: string, specJel: string) {
   };
 }
 
+export const írj_cikkeket_2 = async (könyvek: Promise<string[][]>, kulcs: string) =>
+  (await könyvek).forEach((könyv, index) => {
+    könyv.forEach(
+      async (oldal, i) => await írj_cikket_2(dolgozd_fel_az_oldalt(oldal, '¤'),kulcs , index * 10 + i),
+    );
+  });
+
+const írj_cikket_2 = async (
+  szöveg: { cikkSzöveg: string; értékelés: Értékelés | undefined },
+  kulcs: string,
+  index: number,
+) => {
+  const tartalom = alakítsd_JSON_szöveggé({
+    értékelés: szöveg?.értékelés,
+    szöveg: szöveg?.cikkSzöveg,
+  });
+  console.log('tartalom:', index);
+  const redis_kulcs = `${kulcs}_${index}`;
+  await redis.set(redis_kulcs, tartalom);
+};
+
 interface Értékelés {
   jóságosság: number;
   filozófikusság: number;

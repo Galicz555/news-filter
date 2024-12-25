@@ -3481,6 +3481,7 @@ alkonzuli
 alkormányzó
 alkörmös
 alkörzet
+alkoss
 alkot
 alkotás
 alkotási

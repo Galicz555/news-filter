@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "kaparj": "tsx index.ts",
+    "kezdő_sztorik": "tsx index.ts induló_sztorik",
+    "sztorik": "tsx index.ts sztorik",
     "értelmez": "tsx web/mi/openai.ts"
   },
   "dependencies": {
