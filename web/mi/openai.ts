@@ -2,8 +2,6 @@ import OpenAIApi from 'openai';
 import 'dotenv/config';
 import { z } from 'zod';
 
-let storyMessages: { role: string; content: string }[] = [];
-
 const kapcsolódj_az_openapihoz = () => {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error('Nincs OPENAI_API_KEY');
@@ -54,7 +52,7 @@ export const open_api = async (item: { szöveg: string }) => {
  return result
 }
 
-export const open_api_2 = async (item: { szöveg: string }) => {
+export const ai_teremtés_folytató_sztorik = async (item: { szöveg: string }) => {
   console.log('open_api:', item.szöveg);
   let result
   try{

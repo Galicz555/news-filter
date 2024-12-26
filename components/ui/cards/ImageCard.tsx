@@ -4,9 +4,11 @@ import { Card, CardContent, CardFooter } from '@/components/ui/cards/base/Card';
 export interface ImageCardProps {
   id: string;
   image?: string;
-  title: string;
+  title?: string;
+  content?: string;
   href?: string;
   priority?: boolean;
+  previousArticles?: string[];
   scores?: Map<string, string>;
 }
 
@@ -31,7 +33,7 @@ export default function ImageCard({ image, title, priority, href, scores }: Imag
         )}
       </CardContent>
       <CardFooter className="p-4 flex-col">
-        <h3 className="text-lg font-semibold line-clamp-3">{title}</h3>
+        <h3 className="text-md font-semibold line-clamp-3 text-center">{title}</h3>
         <div className="grid grid-cols-6 gap-4">
           {scores &&
             Array.from(scores.entries()).map(([key, value]) => (

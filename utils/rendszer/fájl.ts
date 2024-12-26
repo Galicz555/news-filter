@@ -15,3 +15,36 @@ export const olvass_fájlokat =
     fs.readdir(könyvtár, (_, files) =>
       files.forEach((file, index) => művelet(path.join(könyvtár, file), index)),
     );
+
+export const hozz_létre_könyvtárt_ha_nincs = (könyvtár: string) => {
+  if (!fs.existsSync(könyvtár)) {
+    fs.mkdirSync(könyvtár);
+  }
+}
+
+export const readFiles = (dir: string, prefix: string): (process: Function) => {title: string, content: string}[] => (process: Function): {title: string, content: string}[] => {
+  const files = fs.readdirSync(dir);
+  return files
+    .filter((file: string) => file.startsWith(prefix))
+    .map((file: string) => {
+      const filePath = path.join(dir, file);
+      return process(fs.readFileSync(filePath, 'utf8'));
+    });
+};
+
+export const readFolder = async (dir: string) => {
+  const files = fs.readdirSync(dir);
+  return files;
+}
+
+export const readSpecificFiles = (dir: string, files: string[]): { title: string, content: string }[] => {
+  return files.map(file => {
+    const filePath = path.join(dir, file);
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf8');
+      return JSON.parse(content);
+    } else {
+      return { title: '', content: '' };
+    }
+  });
+};

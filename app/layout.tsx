@@ -26,7 +26,7 @@ export default function RootLayout({
   const pathname = usePathname() || '';
 
   useEffect(() => {
-    const isArticlePage = /^\/article(\/\d+)?$/.test(pathname);
+    const isArticlePage = /^\/article\/[\w:]+$/.test(pathname);
     setShowNavbar(!isArticlePage);
   }, [pathname]);
 
@@ -34,13 +34,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={
-        typeof window !== 'undefined' &&
-        localStorage.getItem('darkMode') === 'true'
-          ? 'dark'
-          : ''
+        typeof window !== 'undefined' && localStorage.getItem('darkMode') === 'true' ? 'dark' : ''
       }
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -54,14 +57,12 @@ export default function RootLayout({
           }}
         />
         <title>Divine Enlightenments</title>
-        <meta
-          name="news-reader"
-          content="Look through the eyes of an Opinionated God"
-        />
+        <meta name="news-reader" content="Look through the eyes of an Opinionated God" />
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ fontFamily: 'Special Elite, cursive' }}
       >
         {showNavbar && <Navbar />}
         {children}

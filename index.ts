@@ -1,16 +1,12 @@
-import { Redis } from "@upstash/redis";
 import {
-  // ai_teremtés,
   ai_teremtés_induló_sztorik,
-  open_api_2 } from "./web/mi/openai";
-import { írj_cikkeket_2 } from "./fő_folyamatok/cikkÍró";
-import { alakítsd_JSON_szöveggé } from "./utils/rendszer/fájl";
+  ai_teremtés_folytató_sztorik } from "./web/mi/openai";
+import { alakítsd_JSON_szöveggé, readFiles, readFolder, readSpecificFiles } from "./utils/rendszer/fájl";
+import { hozz_létre_helyi_tárolót } from "./tárolók/helyi";
 
 const param = process.argv[2];
-const redis = new Redis({
-  url: 'https://light-ant-49725.upstash.io',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+
+const NUMBEROFGENERATIONS = 10;
 
 
 // try {
@@ -23,26 +19,41 @@ const redis = new Redis({
 async function main() {
   try {
     if (param === 'induló_sztorik') {
-      const sztorik = await Promise.all(Array.from({ length: 3 }, () => ai_teremtés_induló_sztorik()));
-      await írj_cikkeket_2(Promise.resolve([sztorik]), 'bitd');
-      console.log('Sikeresen létrehoztuk az induló sztorikat.');
+      const sztorik = await Promise.all(Array.from({ length: NUMBEROFGENERATIONS }, () => ai_teremtés_induló_sztorik()));
+      await processStoriesStart(sztorik, 'bitd');
     } else if (param === 'sztorik') {
-      const basicKeys = await getKeys('bitd_*');
-      const extensionKeys = await getKeys('bitd_*_folyt_*');
+      const files = await readFolder('./bitd');
+      const folytFiles = files.filter((file: string) => file.includes('_folyt_'));
 
-      if (extensionKeys.length === 0) {
-        const stories = await getContent(basicKeys);
-        await processStories(stories, 'bitd', 0);
+      if (folytFiles.length === 0) {
+        const stories = readFiles('./bitd', 'bitd:story')(JSON.parse);
+
+        const arrayOfZeros = new Array(NUMBEROFGENERATIONS).fill(0);
+        await processStories(stories, 'bitd:story', arrayOfZeros );
       } else {
-        const sortedExtensionKeys = extensionKeys.sort((a, b) => {
-          const aIndex = parseInt(a.split('_').pop() as string);
-          const bIndex = parseInt(b.split('_').pop() as string);
-          return aIndex - bIndex;
-        }).slice(-1);
+        const groupedExtensions: { [key: string]: string[] } = files.reduce((acc: { [x: string]: any[]; }, key: string) => {
+          const groupKey = key.split('_').slice(0, 2).join('_');
+          if (!acc[groupKey]) {
+            acc[groupKey] = [];
+          }
+          acc[groupKey].push(key);
+          return acc;
+        }, {} as { [key: string]: string[] });
 
-        const highestIndex = parseInt(sortedExtensionKeys[0].split('_').pop() as string);
-        const stories = await getContent(sortedExtensionKeys);
-        await processStories(stories, 'bitd', highestIndex + 1);
+        const highestExtensions = Object.values(groupedExtensions).map(group => {
+          return group.sort((a, b) => {
+            const aIndex = parseInt(a.split('_').pop()!.split('.')[0]);
+            const bIndex = parseInt(b.split('_').pop()!.split('.')[0]);
+            return bIndex - aIndex;
+          })[0];
+        }).filter(key => key.includes('_folyt_'));
+
+        const highestLastIndexForStory = highestExtensions
+        .filter(key => key.includes('_folyt_'))
+        .map(key => parseInt(key.split('_').pop()!.split('.')[0]));
+
+        const stories = readSpecificFiles('./bitd', highestExtensions);
+        await processStories(stories, 'bitd:story', highestLastIndexForStory);
       }
 
       console.log('Sikeresen folytattuk a sztorikat.')
@@ -54,23 +65,34 @@ async function main() {
   }
 }
 
-async function getKeys(pattern: string): Promise<string[]> {
-  return await redis.keys(pattern);
-}
-
-async function getContent(keys: string[]): Promise<string[]> {
-  return await Promise.all(keys.map(async (key) => {
-    const content = await redis.get(key) as { szöveg: string };
-    return content ? content.szöveg : '';
+async function processStoriesStart(stories: string[], prefix: string,) {
+  const results = await Promise.all(stories.map((story) => ai_teremtés_folytató_sztorik({ szöveg: story })));
+  await Promise.all(results.map(async (szöveg, idx) => {
+    const feldolgozás = szöveg.split('\n\n');
+    const title = feldolgozás.shift();
+    const újSzöveg = feldolgozás.join('\n\n');
+    const tartalom = alakítsd_JSON_szöveggé({ title, content:újSzöveg });
+    const kulcs = `${prefix}:story_${idx}`;
+    hozz_létre_helyi_tárolót('bitd', kulcs)(tartalom);
   }));
 }
 
-async function processStories(stories: string[], prefix: string, index: number) {
-  const results = await Promise.all(stories.map((story) => open_api_2({ szöveg: story })));
+async function processStories(stories: {
+  title: string,
+  content: string
+}[], prefix: string, index: number[]) {
+  const results = await Promise.all(stories.map(async(story) => {
+    const res = await ai_teremtés_folytató_sztorik({ szöveg: story.content })
+    return res
+  }));
+
   await Promise.all(results.map(async (szöveg, idx) => {
-    const tartalom = alakítsd_JSON_szöveggé({ szöveg });
-    const kulcs = `${prefix}_${idx}_folyt_${index}`;
-    await redis.set(kulcs, tartalom);
+    const feldolgozás = szöveg.split('\n\n');
+    const title = feldolgozás.shift();
+    const újSzöveg = feldolgozás.join('\n\n');
+    const tartalom = alakítsd_JSON_szöveggé({ title, content: újSzöveg });
+    const kulcs = `${prefix}_${idx}_folyt_${index[idx]+1}`;
+    hozz_létre_helyi_tárolót('bitd', kulcs)(tartalom);
   }));
 }
 

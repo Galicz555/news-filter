@@ -65,7 +65,6 @@ const írj_cikket_2 = async (
     értékelés: szöveg?.értékelés,
     szöveg: szöveg?.cikkSzöveg,
   });
-  console.log('tartalom:', index);
   const redis_kulcs = `${kulcs}_${index}`;
   await redis.set(redis_kulcs, tartalom);
 };

@@ -31,7 +31,7 @@ const BasePageLayout: React.FC<BasePageLayoutProps> = ({ mainContent, footerCont
   return (
     <AnimatedContainer>
       <section
-        className="grid grid-rows-[max-content] items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]"
+        className="grid grid-rows-[max-content] items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20"
         // style={{
         //   backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
         //   // backgroundSize: 'contain',
