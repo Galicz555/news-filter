@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/cards/base/Card';
+import { usePathname } from 'next/navigation';
 
 export interface ImageCardProps {
   id: string;
@@ -13,10 +16,36 @@ export interface ImageCardProps {
 }
 
 export default function ImageCard({ image, title, priority, href, scores }: ImageCardProps) {
+  const darkMode = localStorage.getItem('darkMode') === 'true';
+
+  const getBackgroundImage = (path: string | null) => {
+    switch (path) {
+      case '/home':
+        return '';
+      case '/news':
+        return darkMode ? '/images/background/black-paper.jpg' : '/images/background/paper.jpg';
+      case '/characters':
+        return '';
+      case '/items':
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const backgroundImage = getBackgroundImage(usePathname());
+
   return (
     <Card
       className="flex-grow w-full sm:w-[300px] overflow-hidden shadow-lg bg-transparent"
       href={href}
+      style={{
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
       <CardContent className="p-0">
         {image && (

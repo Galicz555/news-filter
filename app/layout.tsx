@@ -56,7 +56,7 @@ export default function RootLayout({
             `,
           }}
         />
-        <title>Divine Enlightenments</title>
+        <title>The Duskwall Dispatch</title>
         <meta name="news-reader" content="Look through the eyes of an Opinionated God" />
         <link rel="icon" href="/favicon.ico" />
       </head>

@@ -21,7 +21,7 @@ const FOLYT_SUFFIX = '_folyt_';
 //   console.error(err);
 // }
 
-async function main() {
+export async function main() {
   try {
     if (param === 'induló_sztorik') {
       const sztorik = await Promise.all(
@@ -114,5 +114,3 @@ async function processStories(
     ),
   );
 }
-
-main();

@@ -5,8 +5,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ImageCard, { ImageCardProps } from '@/components/ui/cards/ImageCard';
-import ImageCardSkeleton from '@/components/ui/cards/ImageCardSkeleton';
+// import ImageCardSkeleton from '@/components/ui/cards/ImageCardSkeleton';
 import { fetchImageCards } from '@/lib/api/fetchImageCards';
+import { Button } from '@/components/ui/Button';
+import { runStoryGeneration } from '@/lib/api/runStoryGeneration';
 
 type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
 
@@ -67,6 +69,14 @@ export default function ImageCardFeed() {
     }
   }, [inView, loadMoreImageCards, loading, hasMore]);
 
+  const runStoryGenAndReloadImageCards = async () => {
+    await runStoryGeneration();
+    setImageCards([]);
+    setPage(0);
+    setHasMore(true);
+    loadMoreImageCards();
+  };
+
   return (
     <div className="flex flex-wrap gap-4">
       {imageCards.map((card, index) => {
@@ -84,11 +94,18 @@ export default function ImageCardFeed() {
           );
         }
       })}
-      {loading &&
+      {/* {loading &&
         Array.from({ length: 10 }).map((_, index) => (
           <ImageCardSkeleton key={`skeleton-${index}`} />
-        ))}
+        ))} */}
       <div ref={ref} />
+      {!loading && (
+        <div className="w-full flex justify-center">
+          <Button variant="outline" onClick={runStoryGenAndReloadImageCards}>
+            {imageCards.length > 0 ? 'Folytasd az újságírást' : 'Végezz kutatómunkát'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
