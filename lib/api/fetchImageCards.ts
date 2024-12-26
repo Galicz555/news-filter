@@ -2,7 +2,6 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { világosodj_meg } from '@/utils/áramlatok/fő';
-import { Redis } from '@upstash/redis';
 import { readFolder, readSpecificFiles } from '@/utils/rendszer/fájl';
 
 type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
@@ -16,7 +15,7 @@ interface Article {
   relatedArticles?: {
     url: string;
     title: string;
-}[];
+  }[];
   scores?: Map<ScoreKey, string>;
 }
 
@@ -28,11 +27,6 @@ const scoreKeyMap: Record<string, ScoreKey> = {
   alaposság: '🤓',
   pénzügyi_haszon: '🤑',
 };
-
-const redis = new Redis({
-  url: 'https://light-ant-49725.upstash.io',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-})
 
 const sumArticleScores = (
   image: {
@@ -58,8 +52,7 @@ const sumArticleScores = (
 
 async function getArticleContent(article: string): Promise<Article> {
   const decodedArticle = decodeURIComponent(article);
-  const key = `${decodedArticle}.json`
-  const story = readSpecificFiles('./bitd', [key])[0];
+  const story = readSpecificFiles('./bitd', [`${decodedArticle}.json`])[0];
 
   if (!story.title || !story.content) {
     return {
@@ -70,23 +63,24 @@ async function getArticleContent(article: string): Promise<Article> {
     };
   }
 
-  let relatedArticles: { url: string, title: string }[] = [];
-
-  const href = `/article/${decodedArticle}`;
   const files = await readFolder('./bitd');
-  const includeKey = decodedArticle.split('_').slice(0, 2).join('_');
-  const relatedFiles = files.filter((file: string) => file.includes(includeKey));
-  const relatedArticlesPromises = relatedFiles.filter((file: string) => file !== decodedArticle).map(async (file: string) => {
-    const relatedStory = readSpecificFiles('./bitd', [file])[0];
-    return {
-      url: `/article/${file.slice(0, -5)}`, //remove .json
-      title: relatedStory.title || 'Untitled'
-    };
-  });
 
-  relatedArticles = await Promise.all(relatedArticlesPromises);
+  const relatedArticlesPromises = files
+    .filter((file: string) => file.includes(decodedArticle.split('_').slice(0, 2).join('_')))
+    .filter((file: string) => file !== decodedArticle)
+    .map(async (file: string) => {
+      const relatedStory = readSpecificFiles('./bitd', [file])[0];
+      return {
+        url: `/article/${file.slice(0, -5)}`, //remove .json
+        title: relatedStory.title || 'Untitled',
+      };
+    });
 
-  const { title, content, értékelés = {} } = story as {
+  const {
+    title,
+    content,
+    értékelés = {},
+  } = story as {
     title: string;
     content: string;
     értékelés: Record<string, number>;
@@ -103,11 +97,11 @@ async function getArticleContent(article: string): Promise<Article> {
 
   return {
     id: uuidv4(),
-    title: title,
-    content: content,
-    href,
+    title,
+    content,
+    href: `/article/${decodedArticle}`,
     image: `/images/Doskvol_newspaper.webp`,
-    relatedArticles,
+    relatedArticles: await Promise.all(relatedArticlesPromises),
     scores,
   };
 }
@@ -119,19 +113,12 @@ export async function fetchImageCards(
 ): Promise<Article[]> {
   const start = page * limit;
 
-  const getHighestIndex = async () => {
-    const files = await readFolder('./bitd');
-
-    const highestIndex = files
-      .filter((file: string) => file.includes('_folyt_'))
-      .map((file: string) => parseInt(file.split('_').pop()!.split('.')[0]))
-      .sort((a, b) => b - a)[0];
-    return highestIndex;
-  }
   const highestIndex = await getHighestIndex();
 
   const articles = await Promise.all(
-    Array.from({ length: limit }, (_, i) => getArticleContent(`bitd:story_${start + i}_folyt_${highestIndex}`)),
+    Array.from({ length: limit }, (_, i) =>
+      getArticleContent(`bitd:story_${start + i}_folyt_${highestIndex}`),
+    ),
   );
 
   const sortedArticles = articles.sort(
@@ -145,7 +132,7 @@ export async function fetchArticle(article: string): Promise<Article> {
   return getArticleContent(article);
 }
 
-export const fetchVilágosodás = async() => {
+export const fetchVilágosodás = async () => {
   try {
     await világosodj_meg();
     console.log('Sikeresen lefutott a program.');
@@ -153,6 +140,16 @@ export const fetchVilágosodás = async() => {
     console.error(err);
   }
 };
+
+async function getHighestIndex() {
+  const files = await readFolder('./bitd');
+
+  const highestIndex = files
+    .filter((file: string) => file.includes('_folyt_'))
+    .map((file: string) => parseInt(file.split('_').pop()!.split('.')[0]))
+    .sort((a, b) => b - a)[0];
+  return highestIndex;
+}
 
 // const generateImageCards = (page: number, limit: number) => {
 //   return Array.from({ length: limit }, (_, i) => ({
