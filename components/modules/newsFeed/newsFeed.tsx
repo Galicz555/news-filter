@@ -1,37 +1,29 @@
 'use client';
 
-import Cookies from 'js-cookie';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ImageCard, { ImageCardProps } from '@/components/ui/cards/ImageCard';
 // import ImageCardSkeleton from '@/components/ui/cards/ImageCardSkeleton';
-import { fetchImageCards } from '@/lib/api/fetchImageCards';
+import { fetchImageCards, fetchImportantArticles } from '@/lib/api/fetchImageCards';
 import { Button } from '@/components/ui/Button';
 import { runStoryGeneration } from '@/lib/api/runStoryGeneration';
 
-type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
-
 export default function ImageCardFeed() {
   const [imageCards, setImageCards] = useState<Array<ImageCardProps>>([]);
+  const [secondColumnCards, setSecondColumnCards] = useState<Array<ImageCardProps>>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [ref, inView] = useInView();
 
-  const settingsMap: Map<ScoreKey, string> = new Map(
-    Object.entries(JSON.parse(Cookies.get('settings') || '{}')).filter(([key]) =>
-      ['😇', '😶‍🌫️', '😁', '😲', '🤓', '🤑'].includes(key),
-    ) as [ScoreKey, string][],
-  );
-  const settingsMapRef = useRef(settingsMap);
   const initialized = useRef(false);
 
   const loadMoreImageCards = useCallback(async () => {
     if (!hasMore) return;
 
     setLoading(true);
-    const newImageCards = await fetchImageCards(page, 10, settingsMapRef.current);
+    const newImageCards = await fetchImageCards(page, 10);
     if (
       newImageCards.length === 0 ||
       newImageCards.some((card) => card.content === 'Nem található a cikk')
@@ -47,8 +39,10 @@ export default function ImageCardFeed() {
   // Initial load
   useEffect(() => {
     const initialLoad = async () => {
-      const initialImageCards = await fetchImageCards(0, 10, settingsMapRef.current);
+      const initialImageCards = await fetchImageCards(0, 10);
+      const secondColumnCards = await fetchImportantArticles(0, 10);
       setImageCards(initialImageCards);
+      setSecondColumnCards(secondColumnCards);
       setPage(1);
       setLoading(false);
       if (initialImageCards.length === 0) {
@@ -77,23 +71,64 @@ export default function ImageCardFeed() {
     loadMoreImageCards();
   };
 
+  const firstCol = imageCards.slice(0, Math.ceil(imageCards.length / 2));
+  const thirdCol = imageCards.slice(Math.ceil(imageCards.length / 2));
+
   return (
-    <div className="flex flex-wrap gap-4">
-      {imageCards.map((card, index) => {
-        if (card.content !== 'Nem található a cikk') {
-          return (
-            <ImageCard
-              key={card.id}
-              id={card.id}
-              image={card.image}
-              title={card.title}
-              href={card.href}
-              priority={index < 10}
-              scores={card.scores}
-            />
-          );
-        }
-      })}
+    <div className="w-full flex flex-col gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-7 gap-8">
+        <div className="col-span-1 md:col-span-2 grid gap-8 grid-rows-5 order-2 md:order-1">
+          {firstCol.map((card, index) => {
+            if (card.content !== 'Nem található a cikk') {
+              return (
+                <ImageCard
+                  key={card.id}
+                  id={card.id}
+                  image={card.image}
+                  title={card.title}
+                  href={card.href}
+                  priority={index < 10}
+                  scores={card.scores}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="col-span-1 md:col-span-3 grid gap-8 grid-rows-1 md:grid-rows-5 order-1 md:order-2">
+          {secondColumnCards.map((card, index) => {
+            if (card.content !== 'Nem található a cikk') {
+              return (
+                <ImageCard
+                  key={card.id}
+                  id={card.id}
+                  image={card.image}
+                  title={card.title}
+                  href={card.href}
+                  priority={index < 10}
+                  scores={card.scores}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="col-span-1 md:col-span-2 grid gap-8 grid-rows-5 order-3">
+          {thirdCol.map((card, index) => {
+            if (card.content !== 'Nem található a cikk') {
+              return (
+                <ImageCard
+                  key={card.id}
+                  id={card.id}
+                  image={card.image}
+                  title={card.title}
+                  href={card.href}
+                  priority={index < 10}
+                  scores={card.scores}
+                />
+              );
+            }
+          })}
+        </div>
+      </div>
       {/* {loading &&
         Array.from({ length: 10 }).map((_, index) => (
           <ImageCardSkeleton key={`skeleton-${index}`} />

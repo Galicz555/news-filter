@@ -13,9 +13,19 @@ export interface ImageCardProps {
   priority?: boolean;
   previousArticles?: string[];
   scores?: Map<string, string>;
+  type?: string;
+  isAlive?: boolean;
 }
 
-export default function ImageCard({ image, title, priority, href, scores }: ImageCardProps) {
+export default function ImageCard({
+  image,
+  title,
+  priority,
+  href,
+  scores,
+  type,
+  isAlive = true,
+}: ImageCardProps) {
   const darkMode = localStorage.getItem('darkMode') === 'true';
 
   const getBackgroundImage = (path: string | null) => {
@@ -37,7 +47,7 @@ export default function ImageCard({ image, title, priority, href, scores }: Imag
 
   return (
     <Card
-      className="flex-grow w-full sm:w-[300px] overflow-hidden shadow-lg bg-transparent"
+      className={`flex-grow w-full overflow-hidden shadow-lg max-h-full bg-transparent relative`}
       href={href}
       style={{
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
@@ -55,14 +65,17 @@ export default function ImageCard({ image, title, priority, href, scores }: Imag
               alt="Card image"
               fill
               priority={priority}
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: type == 'characters' ? 'contain' : 'cover' }}
               sizes="(min-width: 640px) 300px, 100vw"
+              className={`${!isAlive ? 'grayscale' : ''}`}
             />
           </div>
         )}
       </CardContent>
       <CardFooter className="p-4 flex-col">
-        <h3 className="text-md font-semibold line-clamp-3 text-center">{title}</h3>
+        <h3 className="text-md font-semibold line-clamp-3 text-center character-name dark:text-[hsl(var(--antique-gold))]">
+          {title}
+        </h3>
         <div className="grid grid-cols-6 gap-4">
           {scores &&
             Array.from(scores.entries()).map(([key, value]) => (

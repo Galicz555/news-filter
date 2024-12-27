@@ -16,7 +16,10 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, href, onAnimationStart, style, ...props }, ref) => (
     <motion.div
       ref={ref}
-      className={cn('rounded-lg bg-card text-card-foreground shadow-sm', className)}
+      className={cn(
+        'rounded-lg bg-card text-card-foreground shadow-sm shadow-glow transition hover:shadow-strong-glow',
+        className,
+      )}
       onAnimationStart={onAnimationStart}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

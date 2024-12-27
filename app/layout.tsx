@@ -27,7 +27,8 @@ export default function RootLayout({
 
   useEffect(() => {
     const isArticlePage = /^\/article\/[\w:]+$/.test(pathname);
-    setShowNavbar(!isArticlePage);
+    const isCharacterPage = /^\/characters\/[\w:]+$/.test(pathname);
+    setShowNavbar(!isArticlePage && !isCharacterPage);
   }, [pathname]);
 
   return (

@@ -56,6 +56,10 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      boxShadow: {
+        glow: '0 0 10px rgba(255, 255, 255, 0.6)', // Finom fény
+        'strong-glow': '0 0 20px hsl(var(--holy-yellow))', // Erősebb fény
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

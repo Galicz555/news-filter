@@ -23,11 +23,12 @@ export const hozz_létre_könyvtárt_ha_nincs = (könyvtár: string) => {
 };
 
 export const readFiles =
-  (dir: string, prefix: string): ((process: Function) => { title: string; content: string }[]) =>
-  (process: Function): { title: string; content: string }[] => {
+  (dir: string, prefix?: string): ((process: Function) => any[]) =>
+  (process: Function): any[] => {
     const files = fs.readdirSync(dir);
     return files
-      .filter((file: string) => file.startsWith(prefix))
+      .filter((file: string) => (prefix ? file.startsWith(prefix) : true))
+      .filter((file: string) => file.endsWith('.json'))
       .map((file: string) => {
         const filePath = path.join(dir, file);
         return process(fs.readFileSync(filePath, 'utf8'));
@@ -39,10 +40,7 @@ export const readFolder = async (dir: string) => {
   return files;
 };
 
-export const readSpecificFiles = (
-  dir: string,
-  files: string[],
-): { title: string; content: string }[] => {
+export const readSpecificFiles = (dir: string, files: string[]): any[] => {
   return files.map((file) => {
     const filePath = path.join(dir, file);
     if (fs.existsSync(filePath)) {
@@ -50,6 +48,17 @@ export const readSpecificFiles = (
       return JSON.parse(content);
     } else {
       return { title: '', content: '' };
+    }
+  });
+};
+
+export const readSpecificFilesPlain = (dir: string, files: string[]): any[] => {
+  return files.map((file) => {
+    const filePath = path.join(dir, file);
+    if (fs.existsSync(filePath)) {
+      return fs.readFileSync(filePath, 'utf8');
+    } else {
+      return '';
     }
   });
 };

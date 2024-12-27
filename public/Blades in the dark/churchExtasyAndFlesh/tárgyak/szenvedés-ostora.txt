@@ -1,0 +1,8 @@
+A Szenvedés Ostora
+Leírás:
+Egy különleges, kilencágú ostor, amely fekete bőrből és aranyozott markolatból készült. Az ostor szálait apró, borotvaéles fémkampók tarkítják, amelyek minden mozdulatnál mély vágásokat ejtenek. Az ostor szálai vörösen izzanak, amikor az áldozat vérével érintkeznek, mintha fájdalomból és szenvedésből nyernének erőt. A Church of Ecstasy and Flesh hívei szerint az ostor minden csapása közelebb hozza az isteni extázist.
+
+Mechanikai hatások:
+Szenvedés által erő: Ha az ostorral sebzel meg valakit, választhatsz, hogy a karaktered stresszt szenvedjen el (1 stressz), cserébe extra hatásként az ostor gyönyörteli fájdalmat vált ki. Ez demoralizálhatja az ellenséget (-1 kocka az ellenállási próbákra).
+Rituális fájdalom: Az ostor használatával egy rituálé során a felhasználó szinte természetfeletti energiát nyerhet. +1 kocka rituális vagy szentségtelen cselekedetekhez, például summoning vagy szentségsértés alkalmával.
+Kockázatos következmények: A gyakori használat során az ostor természetfeletti energiája a felhasználóra is átterjedhet, ami fájdalomfüggőséghez vezethet (játékos dönthet egy új trauma hozzáadásáról: pl. „Fanatikus”).

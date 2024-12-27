@@ -50,9 +50,9 @@ const sumArticleScores = (
   return sum;
 };
 
-async function getArticleContent(article: string): Promise<Article> {
+async function getArticleContent(dir: string, article: string): Promise<Article> {
   const decodedArticle = decodeURIComponent(article);
-  const story = readSpecificFiles('./bitd', [`${decodedArticle}.json`])[0];
+  const story = readSpecificFiles(dir, [`${decodedArticle}.json`])[0];
 
   if (!story.title || !story.content) {
     return {
@@ -63,13 +63,13 @@ async function getArticleContent(article: string): Promise<Article> {
     };
   }
 
-  const files = await readFolder('./bitd');
+  const files = await readFolder(dir);
 
   const relatedArticlesPromises = files
     .filter((file: string) => file.includes(decodedArticle.split('_').slice(0, 2).join('_')))
-    .filter((file: string) => file !== decodedArticle)
+    .filter((file: string) => file !== `${decodedArticle}.json`)
     .map(async (file: string) => {
-      const relatedStory = readSpecificFiles('./bitd', [file])[0];
+      const relatedStory = readSpecificFiles(dir, [file])[0];
       return {
         url: `/article/${file.slice(0, -5)}`, //remove .json
         title: relatedStory.title || 'Untitled',
@@ -79,10 +79,12 @@ async function getArticleContent(article: string): Promise<Article> {
   const {
     title,
     content,
+    image = '/images/Doskvol_newspaper.webp',
     értékelés = {},
   } = story as {
     title: string;
     content: string;
+    image: string;
     értékelés: Record<string, number>;
   };
 
@@ -100,7 +102,7 @@ async function getArticleContent(article: string): Promise<Article> {
     title,
     content,
     href: `/article/${decodedArticle}`,
-    image: `/images/Doskvol_newspaper.webp`,
+    image,
     relatedArticles: await Promise.all(relatedArticlesPromises),
     scores,
   };
@@ -109,17 +111,21 @@ async function getArticleContent(article: string): Promise<Article> {
 export async function fetchImageCards(
   page: number,
   limit: number,
-  settings: Map<ScoreKey, string>,
+  settings?: Map<ScoreKey, string>,
 ): Promise<Article[]> {
   const start = page * limit;
 
-  const highestIndex = await getHighestIndex();
+  const highestIndex = await getHighestIndex('./bitd');
 
   const articles = await Promise.all(
     Array.from({ length: limit }, (_, i) =>
-      getArticleContent(`bitd:story_${start + i}_folyt_${highestIndex}`),
+      getArticleContent('./bitd', `bitd:story_${start + i}_folyt_${highestIndex}`),
     ),
   );
+
+  if (!settings) {
+    return articles;
+  }
 
   const sortedArticles = articles.sort(
     (a, b) => sumArticleScores(b, settings) - sumArticleScores(a, settings),
@@ -128,8 +134,28 @@ export async function fetchImageCards(
   return sortedArticles;
 }
 
+export async function fetchImportantArticles(page: number, limit: number): Promise<Article[]> {
+  const start = page * limit;
+
+  // const highestIndex = await getHighestIndex('./bitd/importantNews');
+
+  const articles = await Promise.all(
+    Array.from({ length: limit }, (_, i) =>
+      getArticleContent('./bitd/importantNews', `bitd:main_story_${start + i}`),
+    ),
+  );
+
+  return articles;
+}
+
 export async function fetchArticle(article: string): Promise<Article> {
-  return getArticleContent(article);
+  const getDir = (article: string) => {
+    if (article.includes('main_story')) {
+      return './bitd/importantNews';
+    }
+    return './bitd';
+  };
+  return getArticleContent(getDir(article), article);
 }
 
 export const fetchVilágosodás = async () => {
@@ -141,8 +167,8 @@ export const fetchVilágosodás = async () => {
   }
 };
 
-async function getHighestIndex() {
-  const files = await readFolder('./bitd');
+async function getHighestIndex(dir: string) {
+  const files = await readFolder(dir);
 
   const highestIndex = files
     .filter((file: string) => file.includes('_folyt_'))
