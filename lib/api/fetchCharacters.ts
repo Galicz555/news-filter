@@ -10,7 +10,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-export interface Item {
+export interface Character {
   id: string;
   title?: string;
   looks?: string;
@@ -30,16 +30,16 @@ export interface Item {
   }[];
 }
 
-export async function fetchCharacterCards(type: string): Promise<Item[]> {
+export async function fetchCharacterCards(type: string): Promise<Character[]> {
   const keys = await redis.keys(`${type}:*`);
-  const items = await Promise.all(
+  const characters = await Promise.all(
     keys.map(async (key) => {
       const fileContent = await redis.get(key);
-      return fileContent as Item;
+      return fileContent as Character;
     }),
   );
 
-  return items.map((fileContent) => ({
+  return characters.map((fileContent) => ({
     id: fileContent?.id ?? uuidv4(),
     title: fileContent?.title ?? 'Anonymus',
     looks: fileContent?.looks ?? '',
@@ -56,9 +56,9 @@ export async function fetchCharacterCards(type: string): Promise<Item[]> {
   }));
 }
 
-export async function fetchCharacter(title: string): Promise<Item> {
+export async function fetchCharacter(title: string): Promise<Character> {
   const key = `character:${title}.json`;
-  const fileContent = (await redis.get(key)) as Item;
+  const fileContent = (await redis.get(key)) as Character;
 
   if (!fileContent) {
     return {

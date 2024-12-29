@@ -1,10 +1,10 @@
-import ItemsFeed from '@/components/modules/items/items';
+import CharactersFeed from '@/components/modules/characters/characters';
 import BasePageLayout from '@/components/ui/layout/page/base/layout';
 
 export default function Characters() {
   return (
     <BasePageLayout
-      mainContent={<ItemsFeed />}
+      mainContent={<CharactersFeed />}
       footerContent={<div>Made by Galicz Mihály</div>}
     ></BasePageLayout>
   );

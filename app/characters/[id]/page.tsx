@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import AnimatedContainer from '@/components/ui/animation/AnimatedContainer';
-import { fetchCharacter, Item } from '@/lib/api/fetchCharacters';
+import { fetchCharacter, Character } from '@/lib/api/fetchCharacters';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 
@@ -14,16 +14,10 @@ interface CharacterPageProps {
 
 export default function CharacterPage({ params }: CharacterPageProps) {
   const [showInfo, setShowInfo] = useState(false);
-  const [character, setCharacter] = useState<Item>();
-  // const character = fetchCharacter(params.id);
+  const [character, setCharacter] = useState<Character>();
 
   useEffect(() => {
-    const fetchCharacter2 = async () => {
-      const character = await fetchCharacter(params.id);
-      setCharacter(character);
-    };
-
-    fetchCharacter2();
+    fetchCharacter(params.id).then((character) => setCharacter(character));
   }, [params.id]);
 
   return (

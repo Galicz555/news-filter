@@ -15,6 +15,9 @@ export default function Home() {
   const importantNewsUpload = async () => {
     await uploadFilesToRedis('./bitd/importantNews');
   };
+  const itemsUpload = async () => {
+    await uploadFilesToRedis('./bitd/items');
+  };
 
   return (
     <BasePageLayout
@@ -28,6 +31,9 @@ export default function Home() {
           </Button>
           <Button variant="outline" onClick={characterUpload}>
             Töltsd fel a karaktereket a Redisbe!
+          </Button>
+          <Button variant="outline" onClick={itemsUpload}>
+            Töltsd fel a tárgyakat a Redisbe!
           </Button>
         </div>
       }

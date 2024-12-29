@@ -40,7 +40,6 @@ export default function ImageCardFeed() {
   useEffect(() => {
     const initialLoad = async () => {
       const initialImageCards = await fetchImageCards(0, 10);
-      console.log('🚀 ~ initialLoad ~ initialImageCards:', initialImageCards);
       const secondColumnCards = await fetchImportantArticles(0, 10);
       setImageCards(initialImageCards);
       setSecondColumnCards(secondColumnCards);
