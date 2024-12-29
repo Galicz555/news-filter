@@ -2,7 +2,12 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { világosodj_meg } from '@/utils/áramlatok/fő';
-import { readFolder, readSpecificFiles } from '@/utils/rendszer/fájl';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: 'https://light-ant-49725.upstash.io',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 type ScoreKey = '😇' | '😶‍🌫️' | '😁' | '😲' | '🤓' | '🤑';
 
@@ -50,11 +55,12 @@ const sumArticleScores = (
   return sum;
 };
 
-async function getArticleContent(dir: string, article: string): Promise<Article> {
+async function getArticleContent(article: string): Promise<Article> {
   const decodedArticle = decodeURIComponent(article);
-  const story = readSpecificFiles(dir, [`${decodedArticle}.json`])[0];
+  // const story = readSpecificFiles(dir, [`${decodedArticle}.json`])[0];
+  const story = (await redis.get(`${decodedArticle}`)) as Article;
 
-  if (!story.title || !story.content) {
+  if (!story?.title || !story?.content) {
     return {
       id: uuidv4(),
       title: 'Nem található a cikk',
@@ -63,18 +69,31 @@ async function getArticleContent(dir: string, article: string): Promise<Article>
     };
   }
 
-  const files = await readFolder(dir);
+  // const files = await readFolder(dir);
 
-  const relatedArticlesPromises = files
-    .filter((file: string) => file.includes(decodedArticle.split('_').slice(0, 2).join('_')))
-    .filter((file: string) => file !== `${decodedArticle}.json`)
-    .map(async (file: string) => {
-      const relatedStory = readSpecificFiles(dir, [file])[0];
+  const relatedArticlesKeys = await redis.keys(
+    `${decodedArticle.split('_').slice(0, 2).join('_')}*`,
+  );
+  const relatedArticlesPromises = relatedArticlesKeys
+    .filter((key: string) => key !== `${decodedArticle}`)
+    .map(async (key: string) => {
+      const relatedStory = (await redis.get(key)) as Article;
       return {
-        url: `/article/${file.slice(0, -5)}`, //remove .json
+        url: `/article/${key.slice(8)}`, // remove 'article:'
         title: relatedStory.title || 'Untitled',
       };
     });
+
+  // const relatedArticlesPromises = files
+  //   .filter((file: string) => file.includes(decodedArticle.split('_').slice(0, 2).join('_')))
+  //   .filter((file: string) => file !== `${decodedArticle}.json`)
+  //   .map(async (file: string) => {
+  //     const relatedStory = readSpecificFiles(dir, [file])[0];
+  //     return {
+  //       url: `/article/${file.slice(0, -5)}`, //remove .json
+  //       title: relatedStory.title || 'Untitled',
+  //     };
+  //   });
 
   const {
     title,
@@ -85,7 +104,7 @@ async function getArticleContent(dir: string, article: string): Promise<Article>
     title: string;
     content: string;
     image: string;
-    értékelés: Record<string, number>;
+    értékelés?: Record<string, number>;
   };
 
   const scores = new Map<ScoreKey, string>(
@@ -115,11 +134,11 @@ export async function fetchImageCards(
 ): Promise<Article[]> {
   const start = page * limit;
 
-  const highestIndex = await getHighestIndex('./bitd');
+  const highestIndex = await getHighestIndex('bitd');
 
   const articles = await Promise.all(
     Array.from({ length: limit }, (_, i) =>
-      getArticleContent('./bitd', `bitd:story_${start + i}_folyt_${highestIndex}`),
+      getArticleContent(`bitd:story_${start + i}_folyt_${highestIndex}.json`),
     ),
   );
 
@@ -140,22 +159,14 @@ export async function fetchImportantArticles(page: number, limit: number): Promi
   // const highestIndex = await getHighestIndex('./bitd/importantNews');
 
   const articles = await Promise.all(
-    Array.from({ length: limit }, (_, i) =>
-      getArticleContent('./bitd/importantNews', `bitd:main_story_${start + i}`),
-    ),
+    Array.from({ length: limit }, (_, i) => getArticleContent(`bitd:main_story_${start + i}.json`)),
   );
 
   return articles;
 }
 
 export async function fetchArticle(article: string): Promise<Article> {
-  const getDir = (article: string) => {
-    if (article.includes('main_story')) {
-      return './bitd/importantNews';
-    }
-    return './bitd';
-  };
-  return getArticleContent(getDir(article), article);
+  return getArticleContent(`${article}.json`);
 }
 
 export const fetchVilágosodás = async () => {
@@ -167,12 +178,10 @@ export const fetchVilágosodás = async () => {
   }
 };
 
-async function getHighestIndex(dir: string) {
-  const files = await readFolder(dir);
-
-  const highestIndex = files
-    .filter((file: string) => file.includes('_folyt_'))
-    .map((file: string) => parseInt(file.split('_').pop()!.split('.')[0]))
+async function getHighestIndex(prefix: string): Promise<number> {
+  const keys = await redis.keys(`${prefix}:story_*_folyt_*`);
+  const highestIndex = keys
+    .map((key) => parseInt(key.split('_').pop()!.split('.')[0]))
     .sort((a, b) => b - a)[0];
   return highestIndex;
 }

@@ -1,15 +1,14 @@
 'use server';
 
 import { v4 as uuidv4 } from 'uuid';
-import {
-  readFiles,
-  readFolder,
-  readSpecificFiles,
-  readSpecificFilesPlain,
-} from '@/utils/rendszer/fájl';
-import { marked } from 'marked';
+import { Redis } from '@upstash/redis';
+import * as fs from 'fs';
+import path from 'path';
 
-const CHARACTERFOLDER = './bitd/characters';
+const redis = new Redis({
+  url: 'https://light-ant-49725.upstash.io',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export interface Item {
   id: string;
@@ -32,36 +31,36 @@ export interface Item {
 }
 
 export async function fetchCharacterCards(type: string): Promise<Item[]> {
-  const folder = type === 'characters' ? CHARACTERFOLDER : '';
-  const fileContents = readFiles(folder)(JSON.parse);
+  const keys = await redis.keys(`${type}:*`);
+  const items = await Promise.all(
+    keys.map(async (key) => {
+      const fileContent = await redis.get(key);
+      return fileContent as Item;
+    }),
+  );
 
-  const items = fileContents.map((fileContent) => {
-    return {
-      id: fileContent?.id ?? uuidv4(),
-      title: fileContent?.title ?? 'Anonymus',
-      looks: fileContent?.looks ?? '',
-      backstory: fileContent?.backstory ?? '',
-      motivations: fileContent?.motivations ?? '',
-      personality: fileContent?.personality ?? '',
-      influence: fileContent?.influence ?? '',
-      followers: fileContent?.followers ?? '',
-      enemies: fileContent?.enemies ?? '',
-      content: fileContent?.content ?? 'I am groot',
-      href: fileContent?.href ?? '#',
-      image: fileContent?.image ?? '',
-      isAlive: fileContent?.isAlive ?? true,
-    };
-  });
-
-  return items;
+  return items.map((fileContent) => ({
+    id: fileContent?.id ?? uuidv4(),
+    title: fileContent?.title ?? 'Anonymus',
+    looks: fileContent?.looks ?? '',
+    backstory: fileContent?.backstory ?? '',
+    motivations: fileContent?.motivations ?? '',
+    personality: fileContent?.personality ?? '',
+    influence: fileContent?.influence ?? '',
+    followers: fileContent?.followers ?? '',
+    enemies: fileContent?.enemies ?? '',
+    content: fileContent?.content ?? 'I am groot',
+    href: fileContent?.href ?? '#',
+    image: fileContent?.image ?? '',
+    isAlive: fileContent?.isAlive ?? true,
+  }));
 }
 
 export async function fetchCharacter(title: string): Promise<Item> {
-  const file = await readFolder(CHARACTERFOLDER).then((files) =>
-    files.filter((file) => file.endsWith('.json')).find((file) => file.includes(title)),
-  );
+  const key = `character:${title}.json`;
+  const fileContent = (await redis.get(key)) as Item;
 
-  if (!file)
+  if (!fileContent) {
     return {
       id: uuidv4(),
       title: 'Anonymus',
@@ -76,16 +75,6 @@ export async function fetchCharacter(title: string): Promise<Item> {
       href: '#',
       image: '',
     };
-
-  const fileContent = readSpecificFiles(CHARACTERFOLDER, [file])[0];
-
-  const characterContents = (await readFolder(CHARACTERFOLDER))
-    .filter((file) => file.startsWith(title))
-    .filter((file) => file.endsWith('.txt'));
-
-  if (characterContents.length !== 0) {
-    const rawContent = readSpecificFilesPlain(CHARACTERFOLDER, characterContents)[0];
-    fileContent.content = marked(rawContent);
   }
 
   return {
@@ -102,4 +91,21 @@ export async function fetchCharacter(title: string): Promise<Item> {
     href: fileContent?.href ?? '#',
     image: fileContent?.image ?? '',
   };
+}
+
+export async function uploadFilesToRedis(dir: string) {
+  const fileNames = fs.readdirSync(dir).filter((fileName) => fileName.endsWith('.json'));
+  const files = fileNames.map((fileName) => {
+    const filePath = path.join(dir, fileName);
+    const content = fs.readFileSync(filePath, 'utf8');
+    return { fileName, content: JSON.parse(content) };
+  });
+
+  await Promise.all(
+    files.map(async ({ fileName, content }) => {
+      await redis.set(`${fileName}`, JSON.stringify(content));
+    }),
+  );
+
+  console.log('Files uploaded to Redis');
 }

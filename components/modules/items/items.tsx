@@ -7,7 +7,7 @@ import { fetchCharacterCards, Item } from '@/lib/api/fetchCharacters';
 export default function ItemsFeed() {
   const [itemCards, setItemCards] = useState<Array<Item>>([]);
   const initialized = useRef(false);
-  const type = 'characters';
+  const type = 'character';
 
   useEffect(() => {
     const initialLoad = async () => {

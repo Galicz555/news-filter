@@ -10,7 +10,7 @@ interface ArticlePageProps {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const article = await fetchArticle(params.id);
+  const article = await fetchArticle(params.id.replace('.json', ''));
 
   return (
     <AnimatedContainer>

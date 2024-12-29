@@ -65,7 +65,7 @@ export default function ImageCard({
               alt="Card image"
               fill
               priority={priority}
-              style={{ objectFit: type == 'characters' ? 'contain' : 'cover' }}
+              style={{ objectFit: type == 'character' ? 'contain' : 'cover' }}
               sizes="(min-width: 640px) 300px, 100vw"
               className={`${!isAlive ? 'grayscale' : ''}`}
             />
